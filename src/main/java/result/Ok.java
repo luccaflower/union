@@ -1,0 +1,128 @@
+package result;
+
+import option.*;
+
+import java.util.function.*;
+import java.util.stream.*;
+
+import static option.Option.none;
+import static option.Option.some;
+
+public class Ok<T, E extends Exception> implements Result<T, E>{
+    private final T value;
+
+    public Ok(T value) {
+        super();
+        this.value = value;
+    }
+
+    @Override
+    public T unwrap() {
+        return value;
+    }
+
+    @Override
+    public T unwrapOr(T defaultValue) {
+        return value;
+    }
+
+    @Override
+    public T unwrapOrElse(Supplier<T> defaultFunc) {
+        return value;
+    }
+
+    @Override
+    public T expect(String reason) {
+        return value;
+    }
+
+    @Override
+    public boolean isOk() {
+        return true;
+    }
+
+    @Override
+    public boolean isErr() {
+        return false;
+    }
+
+    @Override
+    public boolean isOkAnd(Predicate<T> p) {
+        return p.test(value);
+    }
+
+    @Override
+    public boolean isErrAnd(Predicate<E> p) {
+        return false;
+    }
+
+    @Override
+    public Option<T> ok() {
+        return some(value);
+    }
+
+    @Override
+    public Option<E> err() {
+        return none();
+    }
+
+    @Override
+    public <R> Result<R, E> map(Function<T, R> func) {
+        return Result.ok(func.apply(value));
+    }
+
+    @Override
+    public <R> R mapOr(R defaultValue, Function<T, R> func) {
+        return func.apply(value);
+    }
+
+    @Override
+    public <R> R mapOrElse(Function<E, R> onErr, Function<T, R> onOk) {
+        return onOk.apply(value);
+    }
+
+    @Override
+    public <F extends Exception> Result<T, F> mapErr(Function<E, F> func) {
+        return Result.ok(value);
+    }
+
+    @Override
+    public Stream<T> stream() {
+        return Stream.of(value);
+    }
+
+    @Override
+    public E expectErr(String message) {
+        throw new UnwrappedErrorOnOk(message);
+    }
+
+    @Override
+    public E unwrapErr() {
+        throw new UnwrappedErrorOnOk();
+    }
+
+    @Override
+    public <R> Result<R, E> and(Result<R, E> res) {
+        return res;
+    }
+
+    @Override
+    public <R> Result<R, E> andThen(Function<T, R> func) {
+        return Result.ok(func.apply(value));
+    }
+
+    @Override
+    public <F extends Exception> Result<T, F> or(Result<T, F> res) {
+        return Result.ok(value);
+    }
+
+    @Override
+    public boolean contains(T candidate) {
+        return value.equals(candidate);
+    }
+
+    @Override
+    public boolean containsErr(E candidate) {
+        return false;
+    }
+}
