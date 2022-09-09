@@ -3,7 +3,7 @@ package option;
 import java.util.function.*;
 import java.util.stream.*;
 
-public class None<T> extends Option<T> {
+public class None<T> implements Option<T> {
     @Override
     public T unwrap() {
         throw new UnwrappedNone();
@@ -26,7 +26,7 @@ public class None<T> extends Option<T> {
 
     @Override
     public <R> Option<R> map(Function<T, R> func) {
-        return none();
+        return Option.none();
     }
 
     @Override
@@ -81,12 +81,12 @@ public class None<T> extends Option<T> {
 
     @Override
     public Option<T> and(Option<T> other) {
-        return none();
+        return Option.none();
     }
 
     @Override
     public <R> Option<R> andThen(Function<T, Option<R>> func) {
-        return none();
+        return Option.none();
     }
 
     @Override

@@ -3,7 +3,7 @@ package option;
 import java.util.function.*;
 import java.util.stream.*;
 
-public class Some<T> extends Option<T> {
+public class Some<T> implements Option<T> {
     private final T something;
 
     public Some(T something) {
@@ -32,7 +32,7 @@ public class Some<T> extends Option<T> {
 
     @Override
     public<R> Option<R> map(Function<T, R> func) {
-        return some(func.apply(something));
+        return Option.some(func.apply(something));
     }
 
     @Override
@@ -94,13 +94,13 @@ public class Some<T> extends Option<T> {
     public Option<T> filter(Predicate<T> p) {
         return p.test(something)
             ? this
-            : none();
+            : Option.none();
     }
 
     @Override
     public Option<T> xor(Option<T> other) {
         return other.isSome()
-            ? none()
+            ? Option.none()
             : this;
     }
 
