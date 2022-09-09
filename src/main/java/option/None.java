@@ -1,7 +1,11 @@
 package option;
 
+import result.*;
+
 import java.util.function.*;
 import java.util.stream.*;
+
+import static result.Result.err;
 
 public class None<T> implements Option<T> {
     @Override
@@ -22,6 +26,16 @@ public class None<T> implements Option<T> {
     @Override
     public T expect(String reason) {
         throw new UnwrappedNone(reason);
+    }
+
+    @Override
+    public <E extends Exception> Result<T, E> okOr(E error) {
+        return err(error);
+    }
+
+    @Override
+    public <E extends Exception> Result<T, E> okOrElse(Supplier<E> error) {
+        return err(error.get());
     }
 
     @Override

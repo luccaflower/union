@@ -1,7 +1,11 @@
 package option;
 
+import result.*;
+
 import java.util.function.*;
 import java.util.stream.*;
+
+import static result.Result.ok;
 
 public class Some<T> implements Option<T> {
     private final T something;
@@ -28,6 +32,16 @@ public class Some<T> implements Option<T> {
     @Override
     public T expect(String reason) {
         return something;
+    }
+
+    @Override
+    public <E extends Exception> Result<T, E> okOr(E error) {
+        return ok(something);
+    }
+
+    @Override
+    public <E extends Exception> Result<T, E> okOrElse(Supplier<E> error) {
+        return ok(something);
     }
 
     @Override
