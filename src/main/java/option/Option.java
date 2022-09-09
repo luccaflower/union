@@ -37,10 +37,7 @@ public interface Option<T> {
 
     Option<T> orElse(Supplier<Option<T>> other);
 
-    <R> R mapOrElse(
-        Supplier<R> defaultFunc,
-        Function<T, R> presentFunc
-    );
+    <R> R mapOrElse(Supplier<R> defaultFunc, Function<T, R> presentFunc);
 
     boolean contains(T candidate);
 
