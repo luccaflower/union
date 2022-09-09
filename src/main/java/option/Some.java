@@ -27,7 +27,7 @@ public class Some<T> extends Option<T> {
 
     @Override
     public T expect(String reason) {
-        return unwrap();
+        return something;
     }
 
     @Override
