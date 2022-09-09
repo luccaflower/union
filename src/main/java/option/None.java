@@ -10,13 +10,23 @@ public class None<T> extends Option<T> {
     }
 
     @Override
+    public T unwrapOr(T defaultValue) {
+        return defaultValue;
+    }
+
+    @Override
+    public T unwrapOrElse(Supplier<T> defaultFunc) {
+        return defaultFunc.get();
+    }
+
+    @Override
     public T expect(String reason) {
         throw new UnwrappedNone(reason);
     }
 
     @Override
     public <R> Option<R> map(Function<T, R> func) {
-        return new None<>();
+        return none();
     }
 
     @Override
@@ -26,6 +36,11 @@ public class None<T> extends Option<T> {
 
     @Override
     public boolean isSome() {
+        return false;
+    }
+
+    @Override
+    public boolean isSomeAnd(Predicate<T> p) {
         return false;
     }
 
@@ -48,4 +63,40 @@ public class None<T> extends Option<T> {
     public Option<T> or(Option<T> some) {
         return some;
     }
+
+    @Override
+    public Option<T> orElse(Supplier<Option<T>> other) {
+        return other.get();
+    }
+
+    @Override
+    public <R> R mapOrElse(Supplier<R> defaultFunc, Function<T, R> presentFunc) {
+        return defaultFunc.get();
+    }
+
+    @Override
+    public boolean contains(T candidate) {
+        return false;
+    }
+
+    @Override
+    public Option<T> and(Option<T> other) {
+        return none();
+    }
+
+    @Override
+    public <R> Option<R> andThen(Function<T, Option<R>> func) {
+        return none();
+    }
+
+    @Override
+    public Option<T> filter(Predicate<T> p) {
+        return this;
+    }
+
+    @Override
+    public Option<T> xor(Option<T> other) {
+        return other;
+    }
+
 }

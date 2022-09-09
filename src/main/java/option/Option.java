@@ -14,6 +14,9 @@ public abstract class Option<T> {
     }
 
     public abstract T unwrap();
+    public abstract T unwrapOr(T defaultValue);
+
+    public abstract T unwrapOrElse(Supplier<T> defaultFunc);
 
     public abstract T expect(String reason);
 
@@ -23,9 +26,29 @@ public abstract class Option<T> {
 
     public abstract boolean isSome();
 
+    public abstract boolean isSomeAnd(Predicate<T> p);
+
     public abstract boolean isNone();
 
     public abstract Stream<T> stream();
 
     public abstract Option<T> or(Option<T> some);
+
+    public abstract Option<T> orElse(Supplier<Option<T>> other);
+
+    public abstract<R> R mapOrElse(
+        Supplier<R> defaultFunc,
+        Function<T, R> presentFunc
+    );
+
+    public abstract boolean contains(T candidate);
+
+    public abstract Option<T> and(Option<T> other);
+
+    public abstract<R> Option<R> andThen(Function<T, Option<R>> func);
+
+    public abstract Option<T> filter(Predicate<T> p);
+
+    public abstract Option<T> xor(Option<T> none);
+
 }

@@ -16,13 +16,23 @@ public class Some<T> extends Option<T> {
     }
 
     @Override
+    public T unwrapOr(T defaultValue) {
+        return something;
+    }
+
+    @Override
+    public T unwrapOrElse(Supplier<T> defaultFunc) {
+        return something;
+    }
+
+    @Override
     public T expect(String reason) {
         return unwrap();
     }
 
     @Override
     public<R> Option<R> map(Function<T, R> func) {
-        return new Some<>(func.apply(something));
+        return some(func.apply(something));
     }
 
     @Override
@@ -33,6 +43,11 @@ public class Some<T> extends Option<T> {
     @Override
     public boolean isSome() {
         return true;
+    }
+
+    @Override
+    public boolean isSomeAnd(Predicate<T> p) {
+        return p.test(something);
     }
 
     @Override
@@ -48,6 +63,45 @@ public class Some<T> extends Option<T> {
     @Override
     public Option<T> or(Option<T> some) {
         return this;
+    }
+
+    @Override
+    public Option<T> orElse(Supplier<Option<T>> other) {
+        return this;
+    }
+
+    @Override
+    public <R> R mapOrElse(Supplier<R> defaultFunc, Function<T, R> presentFunc) {
+        return presentFunc.apply(something);
+    }
+
+    @Override
+    public boolean contains(T candidate) {
+        return something.equals(candidate);
+    }
+
+    @Override
+    public Option<T> and(Option<T> other) {
+        return other;
+    }
+
+    @Override
+    public <R> Option<R> andThen(Function<T, Option<R>> func) {
+        return func.apply(something);
+    }
+
+    @Override
+    public Option<T> filter(Predicate<T> p) {
+        return p.test(something)
+            ? this
+            : none();
+    }
+
+    @Override
+    public Option<T> xor(Option<T> other) {
+        return other.isSome()
+            ? none()
+            : this;
     }
 
     @Override

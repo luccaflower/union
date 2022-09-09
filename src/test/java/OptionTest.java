@@ -54,6 +54,14 @@ public class OptionTest {
     }
 
     @Test
+    public void noneMapOrElseReturnsDefault() {
+        assertThat(
+            none().mapOrElse(() -> "thing", v -> "other"),
+            is("thing")
+        );
+    }
+
+    @Test
     public void someIsSome() {
         assertThat(some(new Dummy()).isSome(), is(true));
     }
@@ -81,6 +89,46 @@ public class OptionTest {
     @Test
     public void someOrNoneReturnsSome() {
         assertThat(some("some").or(none()), is(some("some")));
+    }
+
+    @Test
+    public void noneOrNoneReturnsNone() {
+        assertThat(none().or(none()), is(none()));
+    }
+
+    @Test
+    public void someOrSomeIsFirstSome() {
+        assertThat(some("one").or(some("other")), is(some("one")));
+    }
+
+    @Test
+    public void someOrElseReturnsSome() {
+        assertThat(some("one").orElse(() -> some("other")), is(some("one")));
+    }
+
+    @Test
+    public void noneOrElseCallsElse() {
+        assertThat(none().orElse(() -> some("other")), is(some("other")));
+    }
+
+    @Test
+    public void noneXorNoneReturnsNone() {
+        assertThat(none().xor(none()), is(none()));
+    }
+
+    @Test
+    public void someXorSomeReturnsNone() {
+        assertThat(some("one").xor(some("other")), is(none()));
+    }
+
+    @Test
+    public void someXorNoneReturnsSome() {
+        assertThat(some("one").xor(none()), is(some("one")));
+    }
+
+    @Test
+    public void noneXorSomeReturnsSome() {
+        assertThat(none().xor(some("other")), is(some("other")));
     }
 
     private static class Dummy {}
