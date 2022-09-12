@@ -106,4 +106,17 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>byggserver</id>
+            <name>MahjongLogic Internal Releases</name>
+            <url>https://bob.mahjonglogic.net/nexus/repository/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>byggserver</id>
+            <name>MahjongLogic Internal Snapshots</name>
+            <url>https://bob.mahjonglogic.net/nexus/repository/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
