@@ -108,12 +108,12 @@
 
     <distributionManagement>
         <repository>
-            <id>byggserver-release</id>
+            <id>byggserver</id>
             <name>MahjongLogic Internal Releases</name>
             <url>https://bob.mahjonglogic.net/nexus/repository/releases</url>
         </repository>
         <snapshotRepository>
-            <id>byggserver-snapshot</id>
+            <id>byggserver</id>
             <name>MahjongLogic Internal Snapshots</name>
             <url>https://bob.mahjonglogic.net/nexus/repository/snapshots</url>
         </snapshotRepository>
