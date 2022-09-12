@@ -31,5 +31,5 @@ jobs:
       run: mvn deploy -s settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
-        NEXUS_USER: ${{ NEXUS_USER }}
-        NEXUS_PASS: ${{ NEXUS_PASS }}
+        NEXUS_USER: ${{ secrets.NEXUS_USER }}
+        NEXUS_PASS: ${{ secrets.NEXUS_PASS }}
