@@ -7,6 +7,7 @@ import java.util.stream.*;
 
 import static result.Result.ok;
 
+@SuppressWarnings("unused")
 public class Some<T> implements Option<T> {
     private final T something;
 
@@ -119,6 +120,7 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <R> Option<R> flatten() {
         return something instanceof Option<?>
             ? ((Option<?>) something).flatten()

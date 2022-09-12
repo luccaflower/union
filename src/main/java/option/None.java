@@ -7,6 +7,7 @@ import java.util.stream.*;
 
 import static result.Result.err;
 
+@SuppressWarnings("unused")
 public class None<T> implements Option<T> {
     @Override
     public T unwrap() {

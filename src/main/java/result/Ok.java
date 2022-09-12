@@ -7,7 +7,7 @@ import java.util.stream.*;
 
 import static option.Option.none;
 import static option.Option.some;
-
+@SuppressWarnings("unused")
 public class Ok<T, E extends Exception> implements Result<T, E>{
     private final T value;
 
@@ -127,6 +127,7 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <R, F extends Exception> Result<R, F> flatten() {
         return value instanceof Result<?,?>
             ? ((Result<?, ?>) value).flatten()

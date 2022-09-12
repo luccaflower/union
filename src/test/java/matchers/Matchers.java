@@ -5,7 +5,7 @@ import org.junit.jupiter.api.function.*;
 
 import java.util.*;
 
-@SuppressWarnings("Unused")
+@SuppressWarnings("unused")
 public abstract class Matchers {
 
     public static Matcher<List<?>> anyItem(Matcher<?> predicate) {
@@ -84,18 +84,13 @@ public abstract class Matchers {
         };
     }
 
-    private static class ThrowableDescription implements SelfDescribing {
-        private final Throwable e;
-
-        public ThrowableDescription(Throwable e) {
-                                               this.e = e;
-                                                          }
+    private record ThrowableDescription(Throwable e) implements SelfDescribing {
 
         @Override
-        public void describeTo(Description description) {
-            description.appendText(e.getClass().getSimpleName() + " was thrown");
+            public void describeTo(Description description) {
+                description.appendText(e.getClass().getSimpleName() + " was thrown");
+            }
         }
-    }
 
     private static class None extends Throwable {}
     private static abstract class ThrowMatcher extends BaseMatcher<Executable> {

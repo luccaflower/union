@@ -5,6 +5,7 @@ import option.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+@SuppressWarnings("unused")
 public interface Result<T, E extends Exception> {
 
     static<T, E extends Exception> Ok<T, E> ok(T value) {

@@ -8,6 +8,7 @@ import java.util.stream.*;
 import static option.Option.none;
 import static option.Option.some;
 
+@SuppressWarnings("unused")
 public class Err<T, E extends Exception> implements Result<T, E> {
     private final E error;
     public Err(E error) {
@@ -125,6 +126,7 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <R, F extends Exception> Result<R, F> flatten() {
         return (Result<R, F>) Result.err(error);
     }
