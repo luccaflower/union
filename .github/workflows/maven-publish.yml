@@ -28,6 +28,9 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
+    - name: Debug
+      run: echo $GITHUB_ACTOR
+
     - name: Publish to Byggserver
       run: mvn deploy
       env:
