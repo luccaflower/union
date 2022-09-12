@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-        xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <groupId>lucca.flower</groupId>
     <artifactId>union</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Implementation of Rust's Result and Option APIs in Java</description>
+    <url>https://github.com/luccaflower/union/</url>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Lucca Christiansen</name>
+            <email>lucca.kaasgaard@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/luccaflower/union</connection>
+        <developerConnection>scm:git:ssh://git@github.com:luccaflower/union.git</developerConnection>
+        <url>https://github.com/luccaflower/union/tree/master</url>
+    </scm>
+
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -81,5 +105,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>byggserver</id>
+            <name>MahjongLogic Internal Releases</name>
+            <url>https://bob.mahjonglogic.net/nexus/repository/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>byggserver</id>
+            <name>MahjongLogic Internal Snapshots</name>
+            <url>https://bob.mahjonglogic.net/nexus/repository/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
