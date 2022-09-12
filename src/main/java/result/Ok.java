@@ -12,7 +12,6 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     private final T value;
 
     public Ok(T value) {
-        super();
         this.value = value;
     }
 
