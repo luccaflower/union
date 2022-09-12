@@ -111,6 +111,6 @@ public class ResultTest {
     @Test
     public void flattenOnNestedOkReturnsOk() {
         var thing = new Dummy();
-        assertThat(ok(ok(ok(thing))).flatten().unwrap(), is(thing));
+        assertThat(ok(ok(ok(thing))).flatten(), is(ok(thing)));
     }
 }

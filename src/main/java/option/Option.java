@@ -2,6 +2,7 @@ package option;
 
 import result.*;
 
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -14,6 +15,12 @@ public interface Option<T> {
 
     static <T> Some<T> some(T thing) {
         return new Some<>(thing);
+    }
+
+    static <T> Option<T> from(Optional<T> optional) {
+        return optional.isPresent()
+            ? some(optional.get())
+            : none();
     }
 
     T unwrap();
