@@ -22,16 +22,13 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         server-id: byggserver # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
-        server-username: ${{secrets.NEXUS_USER }}
-        server-password: ${{secrets.NEXUS_PASS }}
+        server-username: ${{ secrets.NEXUS_USER }}
+        server-password: ${{ secrets.NEXUS_PASS }}
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s ${{ github.workspace }}/settings.xml
+    - name: Publish to Byggserver
+      run: mvn deploy
       env:
         GITHUB_TOKEN: ${{ github.token }}
-        NEXUS_USER: ${{ secrets.NEXUS_USER }}
-        NEXUS_PASS: ${{ secrets.NEXUS_PASS }}
