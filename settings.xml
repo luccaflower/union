@@ -1,12 +1,12 @@
 <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0">
     <servers>
         <server>
-            <id>byggserver-publish</id>
+            <id>byggserver-release</id>
             <username>${env.NEXUS_USER}</username>
             <password>${env.NEXUS_PASS}</password>
         </server>
         <server>
-            <id>byggserver-release</id>
+            <id>byggserver-snapshot</id>
             <username>${env.NEXUS_USER}</username>
             <password>${env.NEXUS_PASS}</password>
         </server>
