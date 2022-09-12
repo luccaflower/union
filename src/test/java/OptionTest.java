@@ -1,3 +1,4 @@
+import dummy.*;
 import option.*;
 import org.junit.jupiter.api.*;
 
@@ -131,5 +132,26 @@ public class OptionTest {
         assertThat(none().xor(some("other")), is(some("other")));
     }
 
-    private static class Dummy {}
+    @Test
+    public void flattenOnNoneReturnsNone() {
+        assertThat(none().flatten().isNone(), is(true));
+    }
+
+    @Test
+    public void flattenOnNestedNoneReturnsNone() {
+        assertThat(some(none()).flatten().isNone(), is(true));
+    }
+
+    @Test
+    public void flattenOnSomeReturnsSome() {
+        var thing = new Dummy();
+        assertThat(some(thing).flatten().unwrap(), is(thing));
+    }
+
+    @Test
+    public void flattenOnNestedSomeReturnsTheInnermostSome() {
+        var thing = new Dummy();
+        assertThat(some(some(some(thing))).flatten().unwrap(), is(thing));
+    }
+
 }

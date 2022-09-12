@@ -36,4 +36,5 @@ public interface Option<T> {
     Option<T> filter(Predicate<T> p);
     Option<T> xor(Option<T> none);
 
+    <R> Option<R> flatten();
 }

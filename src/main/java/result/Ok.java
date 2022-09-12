@@ -57,12 +57,12 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
-    public Option<T> ok() {
+    public Option<T> okToOption() {
         return some(value);
     }
 
     @Override
-    public Option<E> err() {
+    public Option<E> errToOption() {
         return none();
     }
 
@@ -93,12 +93,12 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
 
     @Override
     public E expectErr(String message) {
-        throw new UnwrappedErrorOnOk(message);
+        throw new UnwrappedOkExpectingError(message);
     }
 
     @Override
     public E unwrapErr() {
-        throw new UnwrappedErrorOnOk();
+        throw new UnwrappedOkExpectingError();
     }
 
     @Override
@@ -124,5 +124,12 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     @Override
     public boolean containsErr(E candidate) {
         return false;
+    }
+
+    @Override
+    public <R, F extends Exception> Result<R, F> flatten() {
+        return value instanceof Result<?,?>
+            ? ((Result<?, ?>) value).flatten()
+            : (Result<R, F>) Result.ok(value);
     }
 }

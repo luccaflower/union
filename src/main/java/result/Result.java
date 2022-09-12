@@ -15,6 +15,14 @@ public interface Result<T, E extends Exception> {
         return new Err<>(error);
     }
 
+    static<E extends Exception> Ok<Void, E> ok() {
+        return ok(new Void());
+    }
+
+    static<T> Err<T, Exception> err() {
+        return err(new Exception());
+    }
+
     T unwrap();
     T unwrapOr(T defaultValue);
     T unwrapOrElse(Supplier<T> defaultFunc);
@@ -23,8 +31,8 @@ public interface Result<T, E extends Exception> {
     boolean isErr();
     boolean isOkAnd(Predicate<T> p);
     boolean isErrAnd(Predicate<E> p);
-    Option<T> ok();
-    Option<E> err();
+    Option<T> okToOption();
+    Option<E> errToOption();
     <R> Result<R, E> map(Function<T, R> func);
     <R> R mapOr(R defaultValue, Function<T, R> func);
     <R> R mapOrElse(Function<E, R> onErr, Function<T, R> onOk);
@@ -37,5 +45,9 @@ public interface Result<T, E extends Exception> {
     <F extends Exception> Result<T, F> or(Result<T, F> res);
     boolean contains(T candidate);
     boolean containsErr(E candidate);
+
+    <R, F extends Exception> Result<R, F> flatten();
+
+    class Void {}
 
 }

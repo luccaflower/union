@@ -119,6 +119,13 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
+    public <R> Option<R> flatten() {
+        return something instanceof Option<?>
+            ? ((Option<?>) something).flatten()
+            : (Option<R>) Option.some(something);
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (other instanceof Some<?>) {
             return ((Some<?>) other).something.equals(this.something);

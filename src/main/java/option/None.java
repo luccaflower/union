@@ -113,4 +113,9 @@ public class None<T> implements Option<T> {
         return other;
     }
 
+    @Override
+    public <R> Option<R> flatten() {
+        return Option.none();
+    }
+
 }
