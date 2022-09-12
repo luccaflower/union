@@ -31,9 +31,11 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         server-id: byggserver # Value of the distributionManagement/repository/id field of the pom.xml
-        server-username: ${{ secrets.NEXUS_USER }}
-        server-password: ${{ secrets.NEXUS_PASS }}
+        server-username: NEXUS_USER
+        server-password: NEXUS_PASS
     - name: Publish to Byggserver
       run: mvn deploy
       env:
         GITHUB_TOKEN: ${{ github.token }}
+        NEXUS_USER: ${{ secrets.NEXUS_USER }}
+        NEXUS_PASS: ${{ secrets.NEXUS_PASS }}
