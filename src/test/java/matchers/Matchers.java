@@ -84,14 +84,18 @@ public abstract class Matchers {
         };
     }
 
-    private record ThrowableDescription(Throwable e) implements SelfDescribing {
+    private static class ThrowableDescription implements SelfDescribing {
+        private final Throwable e;
 
-        @Override
-            public void describeTo(Description description) {
-                description.appendText(e.getClass().getSimpleName() + " was thrown");
-            }
+        public ThrowableDescription(Throwable e) {
+            this.e = e;
         }
 
+        @Override
+        public void describeTo(Description description) {
+            description.appendText(e.getClass().getSimpleName() + " was thrown");
+        }
+    }
     private static class None extends Throwable {}
     private static abstract class ThrowMatcher extends BaseMatcher<Executable> {
         protected SelfDescribing thrown;
