@@ -34,7 +34,7 @@ jobs:
         server-username: NEXUS_USER
         server-password: NEXUS_PASS
     - name: Publish to Byggserver
-      run: cat settings.xml && echo $NEXUS_USER && mvn deploy
+      run: cat $HOME/.m2/settings.xml && echo $NEXUS_USER && mvn deploy
       env:
         GITHUB_TOKEN: ${{ github.token }}
         NEXUS_USER: ${{ secrets.NEXUS_USER }}
