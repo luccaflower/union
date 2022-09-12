@@ -132,4 +132,10 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
             ? ((Result<?, ?>) value).flatten()
             : (Result<R, F>) Result.ok(value);
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Ok
+            && ((Ok<?, ?>) other).value.equals(this.value);
+    }
 }

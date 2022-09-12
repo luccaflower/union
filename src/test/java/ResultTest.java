@@ -3,6 +3,7 @@ import org.junit.jupiter.api.*;
 import result.*;
 
 import static matchers.Matchers.throwsAn;
+import static option.Option.none;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static result.Result.err;
@@ -58,7 +59,7 @@ public class ResultTest {
 
     @Test
     public void okToOptionIsNoneOnError() {
-        assertThat(err().okToOption().isNone(), is(true));
+        assertThat(err().okToOption(), is(none()));
     }
 
     @Test
@@ -73,7 +74,7 @@ public class ResultTest {
 
     @Test
     public void errToOptionIsNoneOnOk() {
-        assertThat(ok().errToOption().isNone(), is(true));
+        assertThat(ok().errToOption(), is(none()));
     }
 
     @Test
@@ -99,7 +100,7 @@ public class ResultTest {
     @Test
     public void flattenOnOkReturnsOk() {
         var thing = new Dummy();
-        assertThat(ok(thing).flatten().unwrap(), is(thing));
+        assertThat(ok(thing).flatten(), is(ok(thing)));
     }
 
     @Test
