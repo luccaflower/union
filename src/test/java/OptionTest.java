@@ -1,5 +1,6 @@
 import dummy.*;
 import option.*;
+import org.hamcrest.*;
 import org.junit.jupiter.api.*;
 
 import static matchers.Matchers.throwsA;
@@ -152,6 +153,25 @@ public class OptionTest {
     public void flattenOnNestedSomeReturnsTheInnermostSome() {
         var thing = new Dummy();
         assertThat(some(some(some(thing))).flatten(), is(some(thing)));
+    }
+
+    @Test
+    public void noneMatchesToNone() {
+        String result = none().matches(
+            some -> "some",
+            () ->  "none"
+        );
+
+        assertThat(result, is("none"));
+    }
+
+    @Test
+    public void someMatchesToSome() {
+        String result = some(new Dummy()).matches(
+            some -> "some",
+            () -> "none"
+        );
+        assertThat(result, is("some"));
     }
 
 }

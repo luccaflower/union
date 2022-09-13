@@ -130,4 +130,9 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     public <R, F extends Exception> Result<R, F> flatten() {
         return (Result<R, F>) Result.err(error);
     }
+
+    @Override
+    public <R> R matches(Function<T, R> ok, Function<E, R> err) {
+        return err.apply(error);
+    }
 }

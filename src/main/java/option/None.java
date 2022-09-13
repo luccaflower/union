@@ -119,4 +119,9 @@ public class None<T> implements Option<T> {
         return Option.none();
     }
 
+    @Override
+    public <R> R matches(Function<T, R> some, Supplier<R> none) {
+        return none.get();
+    }
+
 }

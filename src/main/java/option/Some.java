@@ -128,6 +128,11 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
+    public <R> R matches(Function<T, R> some, Supplier<R> none) {
+        return some.apply(something);
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (other instanceof Some<?>) {
             return ((Some<?>) other).something.equals(this.something);

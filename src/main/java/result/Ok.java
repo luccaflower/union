@@ -134,6 +134,11 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
+    public <R> R matches(Function<T, R> ok, Function<E, R> err) {
+        return ok.apply(value);
+    }
+
+    @Override
     public boolean equals(Object other) {
         return other instanceof Ok
             && ((Ok<?, ?>) other).value.equals(this.value);

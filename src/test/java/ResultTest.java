@@ -1,9 +1,12 @@
 import dummy.*;
+import option.*;
 import org.junit.jupiter.api.*;
 import result.*;
 
+import static matchers.Matchers.throwsA;
 import static matchers.Matchers.throwsAn;
 import static option.Option.none;
+import static option.Option.some;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static result.Result.err;
@@ -112,5 +115,22 @@ public class ResultTest {
     public void flattenOnNestedOkReturnsOk() {
         var thing = new Dummy();
         assertThat(ok(ok(ok(thing))).flatten(), is(ok(thing)));
+    }
+
+    @Test
+    public void errorMatchesToError() {
+        assertThat(() -> err().matches(
+            ok -> "ok",
+            err -> { throw new RuntimeException(err); }
+        ), throwsA(RuntimeException.class));
+    }
+
+    @Test
+    public void okMatchesToOk() {
+        String result = ok().matches(
+            ok -> "ok",
+            err -> { throw new RuntimeException(err); }
+        );
+        assertThat(result, is("ok"));
     }
 }

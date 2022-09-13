@@ -45,4 +45,6 @@ public interface Option<T> {
     Option<T> xor(Option<T> none);
 
     <R> Option<R> flatten();
+
+    <R> R matches(Function<T, R> some,  Supplier<R> none);
 }
