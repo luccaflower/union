@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 echo "Running tests before commit"
-mvn -P mahjonglogic clean test
+mvn clean test
