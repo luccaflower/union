@@ -1,12 +1,10 @@
 import dummy.*;
-import option.*;
 import org.junit.jupiter.api.*;
 import result.*;
 
 import static matchers.Matchers.throwsA;
 import static matchers.Matchers.throwsAn;
 import static option.Option.none;
-import static option.Option.some;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static result.Result.err;

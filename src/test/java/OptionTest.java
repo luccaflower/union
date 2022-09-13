@@ -1,6 +1,5 @@
 import dummy.*;
 import option.*;
-import org.hamcrest.*;
 import org.junit.jupiter.api.*;
 
 import static matchers.Matchers.throwsA;
