@@ -32,7 +32,6 @@
         <url>https://github.com/luccaflower/union/tree/master</url>
     </scm>
 
-
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -106,17 +105,38 @@
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>byggserver</id>
-            <name>MahjongLogic Internal Releases</name>
-            <url>https://bob.mahjonglogic.net/nexus/repository/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>byggserver</id>
-            <name>MahjongLogic Internal Snapshots</name>
-            <url>https://bob.mahjonglogic.net/nexus/repository/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <profiles>
+        <profile>
+            <id>mahjonglogic</id>
+            <distributionManagement>
+                <repository>
+                    <id>byggserver</id>
+                    <name>MahjongLogic Internal Releases</name>
+                    <url>https://bob.mahjonglogic.net/nexus/repository/releases</url>
+                </repository>
+                <snapshotRepository>
+                    <id>byggserver</id>
+                    <name>MahjongLogic Internal Snapshots</name>
+                    <url>https://bob.mahjonglogic.net/nexus/repository/snapshots</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>github</id>
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Apache Maven Packages</name>
+                    <url>https://maven.pkg.github.com/luccaflower/union</url>
+                </repository>
+            </distributionManagement>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
 
 </project>
