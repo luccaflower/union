@@ -55,7 +55,7 @@ public class ResultTest {
     @Test
     public void unwrapOrElseCallsDefaultFunctionOnError() {
         var thing = new Dummy();
-        assertThat(err().unwrapOrElse(() -> thing), is(thing));
+        assertThat(err().unwrapOr(() -> thing), is(thing));
     }
 
     @Test

@@ -20,7 +20,7 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public T unwrapOrElse(Supplier<T> defaultFunc) {
+    public T unwrapOr(Supplier<T> defaultFunc) {
         return defaultFunc.get();
     }
 
@@ -35,7 +35,7 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public <E extends Exception> Result<T, E> okOrElse(Supplier<E> error) {
+    public <E extends Exception> Result<T, E> okOr(Supplier<E> error) {
         return err(error.get());
     }
 
@@ -80,7 +80,7 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> orElse(Supplier<Option<T>> other) {
+    public Option<T> or(Supplier<Option<T>> other) {
         return other.get();
     }
 
@@ -100,7 +100,7 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public <R> Option<R> andThen(Function<T, Option<R>> func) {
+    public <R> Option<R> and(Function<T, Option<R>> func) {
         return Option.none();
     }
 

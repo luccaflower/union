@@ -104,12 +104,12 @@ public class OptionTest {
 
     @Test
     public void someOrElseReturnsSome() {
-        assertThat(some("one").orElse(() -> some("other")), is(some("one")));
+        assertThat(some("one").or(() -> some("other")), is(some("one")));
     }
 
     @Test
     public void noneOrElseCallsElse() {
-        assertThat(none().orElse(() -> some("other")), is(some("other")));
+        assertThat(none().or(() -> some("other")), is(some("other")));
     }
 
     @Test
