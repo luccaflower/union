@@ -32,9 +32,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-
-    - name: Check settings
-      run: cat $HOME/settings.xml
+        overwrite-settings: false
 
     - name: Build with Maven
       run: mvn package
