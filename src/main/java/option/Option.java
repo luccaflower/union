@@ -43,8 +43,6 @@ public interface Option<T> {
     <R> Option<R> and(Function<T, Option<R>> func);
     Option<T> filter(Predicate<T> p);
     Option<T> xor(Option<T> other);
-
     <R> Option<R> flatten();
-
     <R> R matches(Function<T, R> some,  Supplier<R> none);
 }
