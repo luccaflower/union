@@ -22,10 +22,8 @@ jobs:
         servers: |
           [{
             "id": "byggserver",
-            "configuration": {
-              "username": "${env.NEXUS_USER}",
-              "password": "${env.NEXUS_PASS}"
-            }
+            "username": "${env.NEXUS_USER}",
+            "password": "${env.NEXUS_PASS}"
           }]
     - name: Check settings
       run: cat $HOME/.m2/settings.xml
