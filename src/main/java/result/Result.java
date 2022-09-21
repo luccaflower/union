@@ -51,6 +51,6 @@ public interface Result<T, E extends Exception> {
 
     <R> R matches(Function<T, R> ok, Function<E, R> err);
 
-    class Void {}
+    final class Void {}
 
 }
