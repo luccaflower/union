@@ -37,7 +37,7 @@ jobs:
       run: mvn package
 
     - name: Publish to Apache Maven
-      run: mvn deploy
+      run: mvn deploy -P mahjonglogic && mvn deploy -P github
       env:
         GITHUB_TOKEN: ${{ github.token }}
         NEXUS_USER: ${{ secrets.NEXUS_USER }}
