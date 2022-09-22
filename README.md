@@ -1,4 +1,6 @@
 # union
+![Build](https://github.com/luccaflower/union/actions/workflows/maven-publish.yml/badge.svg?event=push)
+
 I just think Rust is neat
 
 `Option<T>` and `Result<T,E>` in Java
