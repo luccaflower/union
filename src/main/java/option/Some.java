@@ -41,7 +41,7 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public <E extends Exception> Result<T, E> okOr(Supplier<E> error) {
+    public <E extends Exception> Result<T, E> okOrElse(Supplier<E> error) {
         return ok(something);
     }
 
@@ -76,12 +76,12 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> or(Option<T> some) {
-        return this;
+    public Option<T> or(Option<?> some) {
+        return Option.some(something);
     }
 
     @Override
-    public Option<T> or(Supplier<Option<T>> other) {
+    public Option<T> orElse(Supplier<Option<T>> other) {
         return this;
     }
 
@@ -101,7 +101,7 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public <R> Option<R> and(Function<T, Option<R>> func) {
+    public <R> Option<R> andThen(Function<T, Option<R>> func) {
         return func.apply(something);
     }
 

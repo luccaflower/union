@@ -2,6 +2,8 @@ import dummy.*;
 import org.junit.jupiter.api.*;
 import result.*;
 
+import java.util.stream.*;
+
 import static matchers.Matchers.throwsA;
 import static matchers.Matchers.throwsAn;
 import static option.Option.none;
@@ -55,7 +57,7 @@ public class ResultTest {
     @Test
     public void unwrapOrElseCallsDefaultFunctionOnError() {
         var thing = new Dummy();
-        assertThat(err().unwrapOr(() -> thing), is(thing));
+        assertThat(err().unwrapOrElse(() -> thing), is(thing));
     }
 
     @Test
@@ -130,5 +132,24 @@ public class ResultTest {
             err -> { throw new RuntimeException(err); }
         );
         assertThat(result, is("ok"));
+    }
+
+    @Test
+    public void listReducesToSingleResult() {
+        assertThat(
+            Stream.of(ok(1), ok(2), err())
+                .reduce(Result::and).get()
+                .isErr(),
+            is(true)
+        );
+    }
+
+    @Test
+    public void listsOverDifferentTypesCompose() {
+        assertThat(
+            Stream.of(ok(1), ok("thing"), err())
+                .reduce(Result::and).get().isErr(),
+            is(true)
+        );
     }
 }

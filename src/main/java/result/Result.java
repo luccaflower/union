@@ -26,7 +26,7 @@ public interface Result<T, E extends Exception> {
 
     T unwrap();
     T unwrapOr(T defaultValue);
-    T unwrapOr(Supplier<T> defaultFunc);
+    T unwrapOrElse(Supplier<T> defaultFunc);
     E unwrapErr();
     T expect(String reason);
     E expectErr(String message);
@@ -42,7 +42,7 @@ public interface Result<T, E extends Exception> {
     <R> R mapOrElse(Function<E, R> onErr, Function<T, R> onOk);
     Stream<T> stream();
     <R> Result<R, E> and(Result<R, E> res);
-    <R> Result<R, E> and(Function<T, R> func);
+    <R> Result<R, E> andThen(Function<T, R> func);
     <F extends Exception> Result<T, F> or(Result<T, F> res);
     boolean contains(T candidate);
     boolean containsErr(E candidate);

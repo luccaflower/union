@@ -2,6 +2,9 @@ import dummy.*;
 import option.*;
 import org.junit.jupiter.api.*;
 
+import java.util.*;
+import java.util.stream.*;
+
 import static matchers.Matchers.throwsA;
 import static option.Option.none;
 import static option.Option.some;
@@ -104,12 +107,12 @@ public class OptionTest {
 
     @Test
     public void someOrElseReturnsSome() {
-        assertThat(some("one").or(() -> some("other")), is(some("one")));
+        assertThat(some("one").orElse(() -> some("other")), is(some("one")));
     }
 
     @Test
     public void noneOrElseCallsElse() {
-        assertThat(none().or(() -> some("other")), is(some("other")));
+        assertThat(none().orElse(() -> some("other")), is(some("other")));
     }
 
     @Test
@@ -171,6 +174,16 @@ public class OptionTest {
             () -> "none"
         );
         assertThat(result, is("some"));
+    }
+
+    @Test
+    public void listReducesToOption() {
+        assertThat(
+            Stream.of(some(1), some(2), some(3), none())
+                .map(o -> o.flatten())
+                .reduce(Option::and).get(),
+            is(none())
+        );
     }
 
 }

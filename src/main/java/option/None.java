@@ -35,7 +35,7 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public <E extends Exception> Result<T, E> okOr(Supplier<E> error) {
+    public <E extends Exception> Result<T, E> okOrElse(Supplier<E> error) {
         return err(error.get());
     }
 
@@ -75,12 +75,12 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> or(Option<T> some) {
-        return some;
+    public Option<T> or(Option<?> other) {
+        return (Option<T>)other;
     }
 
     @Override
-    public Option<T> or(Supplier<Option<T>> other) {
+    public Option<T> orElse(Supplier<Option<T>> other) {
         return other.get();
     }
 
@@ -100,7 +100,7 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public <R> Option<R> and(Function<T, Option<R>> func) {
+    public <R> Option<R> andThen(Function<T, Option<R>> func) {
         return Option.none();
     }
 
@@ -124,4 +124,7 @@ public class None<T> implements Option<T> {
         return none.get();
     }
 
+    private static Option<?> noop(Option<?> o) {
+        return o;
+    }
 }

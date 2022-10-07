@@ -26,7 +26,7 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
 
     @Override
-    public T unwrapOr(Supplier<T> defaultFunc) {
+    public T unwrapOrElse(Supplier<T> defaultFunc) {
         return defaultFunc.get();
     }
 
@@ -106,7 +106,7 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
 
     @Override
-    public <R> Result<R, E> and(Function<T, R> func) {
+    public <R> Result<R, E> andThen(Function<T, R> func) {
         return Result.err(error);
     }
 
