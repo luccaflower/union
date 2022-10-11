@@ -40,7 +40,7 @@ public interface Option<T> {
     Option<T> orElse(Supplier<Option<T>> other);
     boolean contains(T candidate);
     Option<T> and(Option<T> other);
-    <R> Option<R> andThen(Function<T, Option<R>> func);
+    Option<?> andThen(Function<T, Option<?>> func);
     Option<T> filter(Predicate<T> p);
     Option<T> xor(Option<T> other);
     <R> Option<R> flatten();

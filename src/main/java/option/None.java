@@ -100,7 +100,7 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public <R> Option<R> andThen(Function<T, Option<R>> func) {
+    public Option<?> andThen(Function<T, Option<?>> func) {
         return Option.none();
     }
 

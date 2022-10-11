@@ -101,7 +101,7 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public <R> Option<R> andThen(Function<T, Option<R>> func) {
+    public Option<?> andThen(Function<T, Option<?>> func) {
         return func.apply(something);
     }
 
@@ -121,10 +121,10 @@ public class Some<T> implements Option<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <R> Option<R> flatten() {
+    public Option<?> flatten() {
         return something instanceof Option<?>
             ? ((Option<?>) something).flatten()
-            : (Option<R>) Option.some(something);
+            : this;
     }
 
     @Override
