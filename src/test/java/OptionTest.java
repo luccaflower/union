@@ -180,10 +180,10 @@ public class OptionTest {
     public void listReducesToOption() {
         assertThat(
             Stream.of(some(1), some(2), some(3), none())
-                .map(o -> o.flatten())
+                //java is silly
+                .map(s -> s)
                 .reduce(Option::and).get(),
             is(none())
         );
     }
-
 }
