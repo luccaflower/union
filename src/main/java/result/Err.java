@@ -71,7 +71,7 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
 
     @Override
-    public <R, S, U> Result<R, E> flatMap(Function<U, S> func) {
+    public <R, Fa, Fr> Result<R, E> flatMap(Function<Fa, Fr> func) {
         return Result.err(error);
     }
 
@@ -106,8 +106,9 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
 
     @Override
-    public <R> Result<R, E> and(Result<R, E> res) {
-        return Result.err(error);
+    @SuppressWarnings("unchecked")
+    public <R, F extends Exception> Result<R, F> and(Result<R, F> res) {
+        return (Result<R, F>) this;
     }
 
     @Override

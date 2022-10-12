@@ -37,12 +37,12 @@ public interface Result<T, E extends Exception> {
     Option<T> okToOption();
     Option<E> errToOption();
     <R> Result<R, E> map(Function<T, R> func);
-    <R, S, U> Result<R, E> flatMap(Function<U, S> func);
+    <R, Fa, Fr> Result<R, E> flatMap(Function<Fa, Fr> func);
     <F extends Exception> Result<T, F> mapErr(Function<E, F> func);
     <R> R mapOr(R defaultValue, Function<T, R> func);
     <R> R mapOrElse(Function<E, R> onErr, Function<T, R> onOk);
     Stream<T> stream();
-    <R> Result<R, E> and(Result<R, E> res);
+    <R, F extends Exception> Result<R, F> and(Result<R, F> res);
     <R> Result<R, E> andThen(Function<T, R> func);
     <F extends Exception> Result<T, F> or(Result<T, F> res);
     boolean contains(T candidate);

@@ -81,8 +81,8 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> or(Option<?> some) {
-        return Option.some(something);
+    public Option<T> or(Option<T> some) {
+        return this;
     }
 
     @Override
@@ -101,12 +101,12 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> and(Option<T> other) {
+    public <R> Option<R> and(Option<R> other) {
         return other;
     }
 
     @Override
-    public Option<?> andThen(Function<T, Option<?>> func) {
+    public <R> Option<R> andThen(Function<T, Option<R>> func) {
         return func.apply(something);
     }
 

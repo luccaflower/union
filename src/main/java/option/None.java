@@ -80,7 +80,8 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> or(Option<?> other) {
+    @SuppressWarnings("unchecked")
+    public Option<T> or(Option<T> other) {
         return (Option<T>)other;
     }
 
@@ -100,12 +101,12 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> and(Option<T> other) {
+    public <R> Option<R> and(Option<R> other) {
         return Option.none();
     }
 
     @Override
-    public Option<?> andThen(Function<T, Option<?>> func) {
+    public <R> Option<R> andThen(Function<T, Option<R>> func) {
         return Option.none();
     }
 
