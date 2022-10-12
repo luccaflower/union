@@ -37,7 +37,7 @@ public interface Result<T, E extends Exception> {
     Option<T> okToOption();
     Option<E> errToOption();
     <R> Result<R, E> map(Function<T, R> func);
-    <R, U> Result<R, E> flatMap(Function<U, R> func);
+    <R, S, U> Result<R, E> flatMap(Function<U, S> func);
     <F extends Exception> Result<T, F> mapErr(Function<E, F> func);
     <R> R mapOr(R defaultValue, Function<T, R> func);
     <R> R mapOrElse(Function<E, R> onErr, Function<T, R> onOk);
