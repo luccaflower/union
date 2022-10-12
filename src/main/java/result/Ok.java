@@ -71,7 +71,7 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
     @Override
     public <R, U> Result<R, E> flatMap(Function<U, R> func) {
-        return this.<U, E>flatten().map(func);
+        return this.<U, E>flatten().map(func).flatten();
     }
 
     @Override
