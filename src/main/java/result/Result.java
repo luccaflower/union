@@ -2,6 +2,7 @@ package result;
 
 import option.*;
 
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -52,4 +53,92 @@ public interface Result<T, E extends Exception> {
 
     final class Void {}
 
+    static <T, E extends Exception> Collector<Result<T, E>, List<Result<T, E>>, Result<List<T>, E>> andCollector() {
+        return new Collector<>() {
+            @Override
+            public Supplier<List<Result<T, E>>> supplier() {
+                return ArrayList::new;
+            }
+
+            @Override
+            public BiConsumer<List<Result<T, E>>, Result<T, E>> accumulator() {
+                return List::add;
+            }
+
+            @Override
+            public BinaryOperator<List<Result<T, E>>> combiner() {
+                return (one, other) -> {
+                    one.addAll(other);
+                    return one;
+                };
+            }
+
+            @Override
+            public Function<List<Result<T, E>>, Result<List<T>, E>> finisher() {
+                return list -> list.stream().<Result<List<T>, E>>reduce(
+                    ok(new ArrayList<>()),
+                    (acc, e) -> e.and(acc).map(ok -> {
+                        ok.add(e.unwrap());
+                        return ok;
+                    }),
+                    (one, other) -> one.and(other).map(ok -> {
+                        ok.addAll(one.unwrap());
+                        return ok;
+                    })
+                );
+            }
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Set.of(Characteristics.UNORDERED);
+            }
+        };
+    }
+
+    static <T, E extends Exception> Collector<Result<T, E>, List<Result<T, E>>, Result<List<T>, E>> orCollector() {
+        return new Collector<>() {
+            @Override
+            public Supplier<List<Result<T, E>>> supplier() {
+                return ArrayList::new;
+            }
+
+            @Override
+            public BiConsumer<List<Result<T, E>>, Result<T, E>> accumulator() {
+                return List::add;
+            }
+
+            @Override
+            public BinaryOperator<List<Result<T, E>>> combiner() {
+                return (one, other) -> {
+                    one.addAll(other);
+                    return one;
+                };
+            }
+
+            @Override
+            public Function<List<Result<T, E>>, Result<List<T>, E>> finisher() {
+                return list -> list.stream().reduce(
+                    err().flatten(),
+                    (acc, e) -> e.map(
+                        ok -> {
+                            var res = acc.unwrapOr(new ArrayList<>());
+                            res.add(ok);
+                            return res;
+                        }
+                    ).or(acc),
+                    (one, other) -> one.and(other).map(ok -> {
+                        ok.addAll(other.unwrap());
+                        return ok;
+                    }).or(one)
+                        .or(other)
+                );
+            }
+
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Set.of(Characteristics.UNORDERED);
+            }
+        };
+    }
 }

@@ -2,6 +2,7 @@ import dummy.*;
 import org.junit.jupiter.api.*;
 import result.*;
 
+import java.util.*;
 import java.util.stream.*;
 
 import static matchers.Matchers.throwsA;
@@ -163,7 +164,8 @@ public class ResultTest {
         );
     }
 
-    @Test void flatmapOnErrReturnsError() {
+    @Test
+    public void flatmapOnErrReturnsError() {
         assertThat(
             ok().andThen(Result::ok).andThen(ok -> err())
                 .<Result.Void, Result<?, ?>, Result<?, ?>>flatMap(ok -> ok)
@@ -171,4 +173,31 @@ public class ResultTest {
             is(true)
         );
     }
+
+    @Test
+    public void listOfResultsCollectsToResultOverList() {
+        assertThat(
+            Stream.of(ok(), ok(), ok()).collect(Result.andCollector())
+                .map(List::size),
+            is(ok(3)));
+    }
+
+    @Test
+    public void listWithErrorAndCollectsToError() {
+        assertThat(
+            Stream.<Result<Result.Void, Exception>>of(ok(), ok(), ok(), err())
+                .collect(Result.andCollector()).isErr(),
+            is(true)
+        );
+    }
+
+    @Test
+    public void listWithOkOrCollectsToOk() {
+        assertThat(
+            Stream.<Result<Result.Void, Exception>>of(ok(), err(), err())
+                .collect(Result.orCollector()).isOk(),
+            is(true)
+        );
+    }
+
 }

@@ -23,6 +23,42 @@ public interface Option<T> {
             : none();
     }
 
+    static <T> Collector<Option<T>, List<T>, Option<List<T>>> orCollector() {
+        return new Collector<>() {
+            @Override
+            public Supplier<List<T>> supplier() {
+                return ArrayList::new;
+            }
+
+            @Override
+            public BiConsumer<List<T>, Option<T>> accumulator() {
+                return (acc, e) -> {
+                    if (e.isSome()) acc.add(e.unwrap());
+                };
+            }
+
+            @Override
+            public BinaryOperator<List<T>> combiner() {
+                return (one, other) -> {
+                    one.addAll(other);
+                    return one;
+                };
+            }
+
+            @Override
+            public Function<List<T>, Option<List<T>>> finisher() {
+                return list -> list.isEmpty()
+                    ? none()
+                    : some(list);
+            }
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Set.of(Characteristics.UNORDERED);
+            }
+        };
+    }
+
     T unwrap();
     T unwrapOr(T defaultValue);
     T unwrapOr(Supplier<T> defaultFunc);

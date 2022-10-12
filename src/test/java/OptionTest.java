@@ -186,4 +186,14 @@ public class OptionTest {
             is(none())
         );
     }
+
+    @Test
+    public void listOfSomeCollectsToSomeOverList() {
+        assertThat(
+            Stream.of(some(1), some(2), some(3))
+                .collect(Option.orCollector())
+                .map(List::size),
+            is(some(3))
+        );
+    }
 }
