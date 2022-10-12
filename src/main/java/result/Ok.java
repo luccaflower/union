@@ -69,6 +69,10 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     public <R> Result<R, E> map(Function<T, R> func) {
         return Result.ok(func.apply(value));
     }
+    @Override
+    public <R, U> Result<R, E> flatMap(Function<U, R> func) {
+        return this.<U, E>flatten().map(func);
+    }
 
     @Override
     public <R> R mapOr(R defaultValue, Function<T, R> func) {

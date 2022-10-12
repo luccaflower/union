@@ -45,6 +45,11 @@ public class None<T> implements Option<T> {
     }
 
     @Override
+    public <R, U> Option<R> flatMap(Function<U, R> func) {
+        return Option.none();
+    }
+
+    @Override
     public <R> R mapOr(R defaultValue, Function<T, R> func) {
         return defaultValue;
     }

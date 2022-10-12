@@ -71,6 +71,11 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
 
     @Override
+    public <R, U> Result<R, E> flatMap(Function<U, R> func) {
+        return Result.err(error);
+    }
+
+    @Override
     public <R> R mapOr(R defaultValue, Function<T, R> func) {
         return defaultValue;
     }

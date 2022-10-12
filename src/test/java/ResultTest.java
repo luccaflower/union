@@ -152,4 +152,14 @@ public class ResultTest {
             is(true)
         );
     }
+
+    @Test
+    public void flatmapComposesInnerResults() {
+        assertThat(
+            ok().andThen(ok -> ok(1))
+                .<Integer, Integer>flatMap(ok -> ok + 1)
+                .unwrap(),
+            is(2)
+        );
+    }
 }

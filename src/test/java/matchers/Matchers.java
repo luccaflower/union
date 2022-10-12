@@ -64,7 +64,7 @@ public abstract class Matchers {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText(none() + " to be thrown");
+                description.appendText("nothing to be thrown");
             }
         };
     }

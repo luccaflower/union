@@ -51,6 +51,11 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
+    public <R, U> Option<R> flatMap(Function<U, R> func) {
+        return this.<U>flatten().map(func);
+    }
+
+    @Override
     public <R> R mapOr(R defaultValue, Function<T, R> func) {
         return func.apply(something);
     }
@@ -121,10 +126,10 @@ public class Some<T> implements Option<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Option<?> flatten() {
+    public <R> Option<R> flatten() {
         return something instanceof Option<?>
             ? ((Option<?>) something).flatten()
-            : this;
+            : (Option<R>) Option.some(something);
     }
 
     @Override
