@@ -51,7 +51,12 @@ public interface Result<T, E extends Exception> {
     <R, F extends Exception> Result<R, F> flatten();
     <R> R matches(Function<T, R> ok, Function<E, R> err);
 
-    final class Void {}
+    final class Void {
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof Void;
+        }
+    }
 
     static <T, E extends Exception> Collector<Result<T, E>, List<Result<T, E>>, Result<List<T>, E>> andCollector() {
         return new Collector<>() {
@@ -119,7 +124,7 @@ public interface Result<T, E extends Exception> {
             public Function<List<Result<T, E>>, Result<List<T>, E>> finisher() {
                 return list -> list.stream().reduce(
                     err().flatten(),
-                    (acc, e) -> e.map(
+                    (acc, e) -> e.<List<T>>map(
                         ok -> {
                             var res = acc.unwrapOr(new ArrayList<>());
                             res.add(ok);

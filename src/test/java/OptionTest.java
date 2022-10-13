@@ -190,10 +190,20 @@ public class OptionTest {
     @Test
     public void listOfSomeCollectsToSomeOverList() {
         assertThat(
-            Stream.of(some(1), some(2), some(3))
+            Stream.<Option<Integer>>of(some(1), some(2), some(3), none())
                 .collect(Option.orCollector())
                 .map(List::size),
             is(some(3))
+        );
+    }
+
+    @Test
+    public void listWithSingleNoneAndCollectsToNone() {
+        assertThat(
+            Stream.<Option<Integer>>of(some(1), some(2), some(3), none())
+                .collect(Option.andCollector())
+                .isNone(),
+            is(true)
         );
     }
 }

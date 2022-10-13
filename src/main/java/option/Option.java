@@ -59,6 +59,48 @@ public interface Option<T> {
         };
     }
 
+    static <T> Collector<Option<T>, List<Option<T>>, Option<List<T>>> andCollector() {
+        return new Collector<>() {
+            @Override
+            public Supplier<List<Option<T>>> supplier() {
+                return ArrayList::new;
+            }
+
+            @Override
+            public BiConsumer<List<Option<T>>, Option<T>> accumulator() {
+                return List::add;
+            }
+
+            @Override
+            public BinaryOperator<List<Option<T>>> combiner() {
+                return (one, other) -> {
+                    one.addAll(other);
+                    return one;
+                };
+            }
+
+            @Override
+            public Function<List<Option<T>>, Option<List<T>>> finisher() {
+                return list -> list.stream().<Option<List<T>>>reduce(
+                    Option.some(new ArrayList<>()),
+                    (acc, e) -> e.and(acc).map(some -> {
+                        some.add(e.unwrap());
+                        return some;
+                    }),
+                    (one, other) -> one.and(other).map(some -> {
+                        some.addAll(one.unwrap());
+                        return some;
+                    })
+                );
+            }
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Set.of(Characteristics.UNORDERED);
+            }
+        };
+    }
+
     T unwrap();
     T unwrapOr(T defaultValue);
     T unwrapOr(Supplier<T> defaultFunc);
