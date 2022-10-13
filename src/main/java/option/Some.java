@@ -51,8 +51,8 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public <R, U> Option<R> flatMap(Function<U, R> func) {
-        return this.<U>flatten().map(func).flatten();
+    public <R, Fa, Fr> Option<R> flatMap(Function<Fa, Fr> func) {
+        return this.<Fa>flatten().map(func).flatten();
     }
 
     @Override
