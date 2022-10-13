@@ -201,9 +201,8 @@ public class OptionTest {
     public void listWithSingleNoneAndCollectsToNone() {
         assertThat(
             Stream.<Option<Integer>>of(some(1), some(2), some(3), none())
-                .collect(Option.andCollector())
-                .isNone(),
-            is(true)
+                .collect(Option.andCollector()),
+            is(none())
         );
     }
 }

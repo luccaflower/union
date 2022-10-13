@@ -9,6 +9,7 @@ import java.util.stream.*;
 import static matchers.Matchers.throwsA;
 import static matchers.Matchers.throwsAn;
 import static option.Option.none;
+import static option.Option.some;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static result.Result.err;
@@ -51,9 +52,7 @@ public class ResultTest {
 
     @Test
     public void unwrapOrReturnsOkValueOnOk() {
-        var thing = new Dummy();
-        var other = new Dummy();
-        assertThat(ok(thing).unwrapOr(other), is(thing));
+        assertThat(ok("one").unwrapOr("other"), is("one"));
     }
 
     @Test
@@ -69,12 +68,12 @@ public class ResultTest {
 
     @Test
     public void okToOptionIsSomeOnOk() {
-        assertThat(ok().okToOption().isSome(), is(true));
+        assertThat(ok(1).okToOption(), is(some(1)));
     }
 
     @Test
     public void errToOptionIsSomeOnError() {
-        assertThat(err().errToOption().isSome(), is(true));
+        assertThat(err().errToOption(), is(some(new Result.ResultException())));
     }
 
     @Test
@@ -110,7 +109,7 @@ public class ResultTest {
 
     @Test
     public void flattenOnNestedErrorReturnsError() {
-        assertThat(ok(err()).flatten().isErr(), is(true));
+        assertThat(ok(err()).flatten(), is(err()));
     }
 
     @Test
@@ -121,10 +120,9 @@ public class ResultTest {
 
     @Test
     public void errorMatchesToError() {
-        assertThat(() -> err().matches(
-            ok -> "ok",
-            err -> { throw new RuntimeException(err); }
-        ), throwsA(RuntimeException.class));
+        assertThat(
+            err().matches(ok -> "ok", err -> "error"),
+            is("error"));
     }
 
     @Test
@@ -140,9 +138,8 @@ public class ResultTest {
     public void listReducesToSingleResult() {
         assertThat(
             Stream.of(ok(1), ok(2), err())
-                .reduce(Result::and).get()
-                .isErr(),
-            is(true)
+                .reduce(Result::and).get(),
+            is(err())
         );
     }
 
@@ -150,8 +147,8 @@ public class ResultTest {
     public void listsOverDifferentTypesCompose() {
         assertThat(
             Stream.of(ok(1), ok("thing"), err())
-                .reduce(Result::and).get().isErr(),
-            is(true)
+                .reduce(Result::and).get(),
+            is(err())
         );
     }
 
@@ -159,19 +156,16 @@ public class ResultTest {
     public void flatmapComposesInnerResults() {
         assertThat(
             ok().andThen(ok -> ok(1)).andThen(Result::ok).andThen(Result::ok)
-                .<Integer, Integer, Integer>flatMap(ok -> ok + 1)
-                .unwrap(),
-            is(2)
+                .<Integer, Integer, Integer>flatMap(ok -> ok + 1),
+            is(ok(2))
         );
     }
 
     @Test
     public void flatmapOnErrReturnsError() {
         assertThat(
-            ok().andThen(Result::ok).andThen(ok -> err())
-                .<Void, Result<?, ?>, Result<?, ?>>flatMap(ok -> ok)
-                .isErr(),
-            is(true)
+            ok().andThen(Result::ok).andThen(ok -> err()).flatMap(ok -> ok),
+            is(err())
         );
     }
 
@@ -187,17 +181,18 @@ public class ResultTest {
     public void listWithErrorAndCollectsToError() {
         assertThat(
             Stream.<Result<Void, Exception>>of(ok(), ok(), ok(), err())
-                .collect(Result.andCollector()).isErr(),
-            is(true)
+                .collect(Result.andCollector()),
+            is(err())
         );
     }
 
     @Test
     public void listWithOkOrCollectsToOk() {
+        Result<Integer, Exception> result = Stream.<Result<Void, Exception>>of(ok(), err(), err())
+            .collect(Result.orCollector()).map(List::size);
         assertThat(
-            Stream.<Result<Void, Exception>>of(ok(), err(), err())
-                .collect(Result.orCollector()).isOk(),
-            is(true)
+            result,
+            is(ok(1))
         );
     }
 

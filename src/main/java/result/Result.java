@@ -22,7 +22,14 @@ public interface Result<T, E extends Exception> {
     }
 
     static<T> Err<T, Exception> err() {
-        return err(new Exception());
+        return err(new ResultException());
+    }
+
+    class ResultException extends Exception {
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof ResultException;
+        }
     }
 
     T unwrap();

@@ -141,4 +141,10 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     public <R> R matches(Function<T, R> ok, Function<E, R> err) {
         return err.apply(error);
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Err
+            && ((Err<?, ?>) other).error.equals(this.error);
+    }
 }
