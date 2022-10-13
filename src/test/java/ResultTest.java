@@ -1,6 +1,7 @@
 import dummy.*;
 import org.junit.jupiter.api.*;
 import result.*;
+import result.Void;
 
 import java.util.*;
 import java.util.stream.*;
@@ -168,7 +169,7 @@ public class ResultTest {
     public void flatmapOnErrReturnsError() {
         assertThat(
             ok().andThen(Result::ok).andThen(ok -> err())
-                .<Result.Void, Result<?, ?>, Result<?, ?>>flatMap(ok -> ok)
+                .<Void, Result<?, ?>, Result<?, ?>>flatMap(ok -> ok)
                 .isErr(),
             is(true)
         );
@@ -185,7 +186,7 @@ public class ResultTest {
     @Test
     public void listWithErrorAndCollectsToError() {
         assertThat(
-            Stream.<Result<Result.Void, Exception>>of(ok(), ok(), ok(), err())
+            Stream.<Result<Void, Exception>>of(ok(), ok(), ok(), err())
                 .collect(Result.andCollector()).isErr(),
             is(true)
         );
@@ -194,7 +195,7 @@ public class ResultTest {
     @Test
     public void listWithOkOrCollectsToOk() {
         assertThat(
-            Stream.<Result<Result.Void, Exception>>of(ok(), err(), err())
+            Stream.<Result<Void, Exception>>of(ok(), err(), err())
                 .collect(Result.orCollector()).isOk(),
             is(true)
         );
