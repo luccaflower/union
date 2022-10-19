@@ -100,6 +100,17 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
+    public Result<T, E> ifOk(Consumer<T> onOk) {
+        onOk.accept(value);
+        return this;
+    }
+
+    @Override
+    public Result<T, E> ifErr(Consumer<E> onErr) {
+        return this;
+    }
+
+    @Override
     public E unwrapErr() {
         throw new UnwrappedOkExpectingError();
     }

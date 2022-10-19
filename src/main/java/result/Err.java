@@ -101,6 +101,17 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
 
     @Override
+    public Result<T, E> ifOk(Consumer<T> onOk) {
+        return this;
+    }
+
+    @Override
+    public Result<T, E> ifErr(Consumer<E> onErr) {
+        onErr.accept(error);
+        return this;
+    }
+
+    @Override
     public E unwrapErr() {
         return error;
     }

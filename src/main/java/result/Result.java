@@ -40,6 +40,8 @@ public interface Result<T, E extends Exception> {
     E unwrapErr();
     T expect(String reason);
     E expectErr(String message);
+    Result<T, E> ifOk(Consumer<T> onOk);
+    Result<T, E> ifErr(Consumer<E> onErr);
     boolean isOk();
     boolean isOkAnd(Predicate<T> p);
     boolean isErr();
