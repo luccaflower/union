@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+import static result.Unit.unit;
+
 @SuppressWarnings("unused")
 public interface Result<T, E extends Exception> {
 
@@ -17,8 +19,8 @@ public interface Result<T, E extends Exception> {
         return new Err<>(error);
     }
 
-    static<E extends Exception> Ok<Void, E> ok() {
-        return ok(new Void());
+    static<E extends Exception> Ok<Unit, E> ok() {
+        return ok(unit());
     }
 
     static<T> Err<T, Exception> err() {

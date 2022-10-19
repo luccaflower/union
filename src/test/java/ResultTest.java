@@ -1,12 +1,11 @@
 import dummy.*;
 import org.junit.jupiter.api.*;
 import result.*;
-import result.Void;
+import result.Unit;
 
 import java.util.*;
 import java.util.stream.*;
 
-import static matchers.Matchers.throwsA;
 import static matchers.Matchers.throwsAn;
 import static option.Option.none;
 import static option.Option.some;
@@ -180,7 +179,7 @@ public class ResultTest {
     @Test
     public void listWithErrorAndCollectsToError() {
         assertThat(
-            Stream.<Result<Void, Exception>>of(ok(), ok(), ok(), err())
+            Stream.<Result<Unit, Exception>>of(ok(), ok(), ok(), err())
                 .collect(Result.andCollector()),
             is(err())
         );
@@ -188,7 +187,7 @@ public class ResultTest {
 
     @Test
     public void listWithOkOrCollectsToOk() {
-        Result<Integer, Exception> result = Stream.<Result<Void, Exception>>of(ok(), err(), err())
+        Result<Integer, Exception> result = Stream.<Result<Unit, Exception>>of(ok(), err(), err())
             .collect(Result.orCollector()).map(List::size);
         assertThat(
             result,
