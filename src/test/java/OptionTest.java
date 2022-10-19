@@ -3,6 +3,7 @@ import option.*;
 import org.junit.jupiter.api.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.*;
 import java.util.stream.*;
 
 import static matchers.Matchers.throwsA;
@@ -204,5 +205,12 @@ public class OptionTest {
                 .collect(Option.andCollector()),
             is(none())
         );
+    }
+
+    @Test
+    public void ifNoneRunsActionOnNone() {
+        var wasRun = new AtomicBoolean(false);
+        none().ifNone(() -> wasRun.set(true));
+        assertThat(wasRun.get(), is(true));
     }
 }

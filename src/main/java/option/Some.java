@@ -36,6 +36,17 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
+    public Option<T> ifSome(Consumer<T> onSome) {
+        onSome.accept(something);
+        return this;
+    }
+
+    @Override
+    public Option<T> ifNone(Action onNone) {
+        return this;
+    }
+
+    @Override
     public <E extends Exception> Result<T, E> okOr(E error) {
         return ok(something);
     }

@@ -30,6 +30,17 @@ public class None<T> implements Option<T> {
     }
 
     @Override
+    public Option<T> ifSome(Consumer<T> onSome) {
+        return this;
+    }
+
+    @Override
+    public Option<T> ifNone(Action onNone) {
+        onNone.run();
+        return this;
+    }
+
+    @Override
     public <E extends Exception> Result<T, E> okOr(E error) {
         return err(error);
     }
@@ -80,9 +91,8 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Option<T> or(Option<T> other) {
-        return (Option<T>)other;
+        return other;
     }
 
     @Override

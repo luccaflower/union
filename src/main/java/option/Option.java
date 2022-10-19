@@ -105,6 +105,9 @@ public interface Option<T> {
     T unwrapOr(T defaultValue);
     T unwrapOr(Supplier<T> defaultFunc);
     T expect(String reason);
+    Option<T> ifSome(Consumer<T> onSome);
+    @SuppressWarnings("UnusedReturnValue")
+    Option<T> ifNone(Action onNone);
     <E extends Exception> Result<T, E> okOr(E error);
     <E extends Exception> Result<T, E> okOrElse(Supplier<E> error);
     <R> Option<R> map(Function<T, R> func);
@@ -124,4 +127,9 @@ public interface Option<T> {
     Option<T> xor(Option<T> other);
     <R> Option<R> flatten();
     <R> R matches(Function<T, R> some,  Supplier<R> none);
+
+    @FunctionalInterface
+    interface Action {
+        void run();
+    }
 }
