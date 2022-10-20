@@ -88,7 +88,7 @@ public class OptionTest {
 
     @Test
     public void noneOrSomeReturnsSome() {
-        assertThat(none().or(new Some<>("some")), is(some("some")));
+        assertThat(none().or(some("thing")), is(some("thing")));
     }
 
     @Test
@@ -212,5 +212,20 @@ public class OptionTest {
         var wasRun = new AtomicBoolean(false);
         none().ifNone(() -> wasRun.set(true));
         assertThat(wasRun.get(), is(true));
+    }
+
+    @Test
+    public void noneAndNoneIsNone() {
+        assertThat(none().and(none()), is(none()));
+    }
+
+    @Test
+    public void someAndNoneIsNone() {
+        assertThat(some("thing").and(none()), is(none()));
+    }
+
+    @Test
+    public void someAndSomeIsSecondSome() {
+        assertThat(some("one").and(some("other")), is(some("other")));
     }
 }
