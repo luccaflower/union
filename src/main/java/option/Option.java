@@ -111,7 +111,7 @@ public interface Option<T> {
     <E extends Exception> Result<T, E> okOr(E error);
     <E extends Exception> Result<T, E> okOrElse(Supplier<E> error);
     <R> Option<R> map(Function<T, R> func);
-    <R, Fa, Fr> Option<R> flatMap(Function<Fa, Fr> func);
+    <U, R> Option<R> flatMap(Function<U, Option<R>> func);
     <R> R mapOr(R defaultValue, Function<T, R> func);
     <R> R mapOrElse(Supplier<R> defaultFunc, Function<T, R> presentFunc);
     boolean isSome();

@@ -70,8 +70,11 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
         return Result.ok(func.apply(value));
     }
     @Override
-    public <R, Fa, Fr> Result<R, E> flatMap(Function<Fa, Fr> func) {
-        return this.<Fa, E>flatten().map(func).flatten();
+    public <U, R> Result<R, E> flatMap(Function<U, Result<R, E>> func) {
+        return this.<U, E>flatten().matches(
+            func,
+            Result::err
+        );
     }
 
     @Override

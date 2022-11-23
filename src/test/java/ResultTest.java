@@ -155,7 +155,7 @@ public class ResultTest {
     public void flatmapComposesInnerResults() {
         assertThat(
             ok().andThen(ok -> ok(1)).andThen(Result::ok).andThen(Result::ok)
-                .<Integer, Integer, Integer>flatMap(ok -> ok + 1),
+                .<Integer, Integer>flatMap(ok -> ok(ok + 1)),
             is(ok(2))
         );
     }
@@ -163,7 +163,7 @@ public class ResultTest {
     @Test
     public void flatmapOnErrReturnsError() {
         assertThat(
-            ok().andThen(Result::ok).andThen(ok -> err()).flatMap(ok -> ok),
+            ok().andThen(Result::ok).andThen(ok -> err()).flatMap(Result::ok),
             is(err())
         );
     }

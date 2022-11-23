@@ -70,8 +70,7 @@ public class Err<T, E extends Exception> implements Result<T, E> {
         return Result.err(error);
     }
 
-    @Override
-    public <R, Fa, Fr> Result<R, E> flatMap(Function<Fa, Fr> func) {
+    public <U, R> Result<R, E> flatMap(Function<U, Result<R, E>> func) {
         return Result.err(error);
     }
 
