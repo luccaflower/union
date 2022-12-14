@@ -154,8 +154,11 @@ public class ResultTest {
     @Test
     public void flatmapComposesInnerResults() {
         assertThat(
-            ok().andThen(ok -> ok(1)).andThen(Result::ok).andThen(Result::ok)
-                .<Integer, Integer>flatMap(ok -> ok(ok + 1)),
+            ok().andThen(ok -> ok(1))
+                .andThen(Result::ok)
+                .andThen(Result::ok)
+                .<Integer, Exception>flatten()
+                .flatMap(ok -> ok(ok + 1)),
             is(ok(2))
         );
     }
