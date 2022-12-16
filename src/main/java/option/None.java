@@ -140,7 +140,7 @@ public class None<T> implements Option<T> {
         return none.get();
     }
 
-    private static Option<?> noop(Option<?> o) {
-        return o;
+    @Override public int hashCode() {
+        return 0;
     }
 }

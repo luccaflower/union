@@ -14,4 +14,9 @@ public class UnwrappedNone extends RuntimeException {
         return other instanceof UnwrappedNone
             && ((UnwrappedNone) other).getMessage().equals(getMessage());
     }
+
+    @Override
+    public int hashCode() {
+        return 23 * getMessage().hashCode();
+    }
 }

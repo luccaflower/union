@@ -14,9 +14,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static result.Result.err;
 import static result.Result.ok;
 
-public class ResultTest {
+class ResultTest {
     @Test
-    public void unwrapOnErrorThrowsRuntimeException() {
+    void unwrapOnErrorThrowsRuntimeException() {
         assertThat(
             () -> err(new Exception()).unwrap(),
             throwsAn(UnwrappedErrorExpectingOk.class)
@@ -24,7 +24,7 @@ public class ResultTest {
     }
 
     @Test
-    public void unwrapErrOnOkThrowsRuntimeException() {
+    void unwrapErrOnOkThrowsRuntimeException() {
         assertThat(
             () -> ok().unwrapErr(),
             throwsAn(UnwrappedOkExpectingError.class)
@@ -32,100 +32,100 @@ public class ResultTest {
     }
 
     @Test
-    public void unwrapOnOkReturnsValue() {
+    void unwrapOnOkReturnsValue() {
         var thing = new Dummy();
         assertThat(ok(thing).unwrap(), is(thing));
     }
 
     @Test
-    public void unwrapErrOnErrorReturnsError() {
+    void unwrapErrOnErrorReturnsError() {
         var e = new Exception();
         assertThat(err(e).unwrapErr(), is(e));
     }
 
     @Test
-    public void unwrapOrReturnsDefaultOnError() {
+    void unwrapOrReturnsDefaultOnError() {
         var thing = new Dummy();
         assertThat(err(new Exception()).unwrapOr(thing), is(thing));
     }
 
     @Test
-    public void unwrapOrReturnsOkValueOnOk() {
+    void unwrapOrReturnsOkValueOnOk() {
         assertThat(ok("one").unwrapOr("other"), is("one"));
     }
 
     @Test
-    public void unwrapOrElseCallsDefaultFunctionOnError() {
+    void unwrapOrElseCallsDefaultFunctionOnError() {
         var thing = new Dummy();
         assertThat(err().unwrapOrElse(() -> thing), is(thing));
     }
 
     @Test
-    public void okToOptionIsNoneOnError() {
+    void okToOptionIsNoneOnError() {
         assertThat(err().okToOption(), is(none()));
     }
 
     @Test
-    public void okToOptionIsSomeOnOk() {
+    void okToOptionIsSomeOnOk() {
         assertThat(ok(1).okToOption(), is(some(1)));
     }
 
     @Test
-    public void errToOptionIsSomeOnError() {
+    void errToOptionIsSomeOnError() {
         assertThat(err().errToOption(), is(some(new Result.ResultException())));
     }
 
     @Test
-    public void errToOptionIsNoneOnOk() {
+    void errToOptionIsNoneOnOk() {
         assertThat(ok().errToOption(), is(none()));
     }
 
     @Test
-    public void isOkAndIsAlwaysFalseWhenPredicateFails() {
+    void isOkAndIsAlwaysFalseWhenPredicateFails() {
         assertThat(ok().isOkAnd(v -> false), is(false));
     }
 
     @Test
-    public void isOkAndIsAlwaysFalseOnError() {
+    void isOkAndIsAlwaysFalseOnError() {
         assertThat(err().isOkAnd(v -> true), is(false));
     }
 
     @Test
-    public void isOkAndIsTrueOnOkAndPredicateSucceeds() {
+    void isOkAndIsTrueOnOkAndPredicateSucceeds() {
         assertThat(ok().isOkAnd(v -> true), is(true));
     }
 
     @Test
-    public void flattenOnErrorReturnsError() {
+    void flattenOnErrorReturnsError() {
         assertThat(err().flatten().isErr(), is(true));
     }
 
     @Test
-    public void flattenOnOkReturnsOk() {
+    void flattenOnOkReturnsOk() {
         var thing = new Dummy();
         assertThat(ok(thing).flatten(), is(ok(thing)));
     }
 
     @Test
-    public void flattenOnNestedErrorReturnsError() {
+    void flattenOnNestedErrorReturnsError() {
         assertThat(ok(err()).flatten(), is(err()));
     }
 
     @Test
-    public void flattenOnNestedOkReturnsOk() {
+    void flattenOnNestedOkReturnsOk() {
         var thing = new Dummy();
         assertThat(ok(ok(ok(thing))).flatten(), is(ok(thing)));
     }
 
     @Test
-    public void errorMatchesToError() {
+    void errorMatchesToError() {
         assertThat(
             err().matches(ok -> "ok", err -> "error"),
             is("error"));
     }
 
     @Test
-    public void okMatchesToOk() {
+    void okMatchesToOk() {
         String result = ok().matches(
             ok -> "ok",
             err -> { throw new RuntimeException(err); }
@@ -134,7 +134,7 @@ public class ResultTest {
     }
 
     @Test
-    public void listReducesToSingleResult() {
+    void listReducesToSingleResult() {
         assertThat(
             Stream.of(ok(1), ok(2), err())
                 .reduce(Result::and).get(),
@@ -143,7 +143,7 @@ public class ResultTest {
     }
 
     @Test
-    public void listsOverDifferentTypesCompose() {
+    void listsOverDifferentTypesCompose() {
         assertThat(
             Stream.of(ok(1), ok("thing"), err())
                 .reduce(Result::and).get(),
@@ -152,7 +152,7 @@ public class ResultTest {
     }
 
     @Test
-    public void flatmapComposesInnerResults() {
+    void flatmapComposesInnerResults() {
         assertThat(
             ok().andThen(ok -> ok(1))
                 .andThen(Result::ok)
@@ -164,15 +164,15 @@ public class ResultTest {
     }
 
     @Test
-    public void flatmapOnErrReturnsError() {
+    void flatmapOnErrReturnsError() {
         assertThat(
-            ok().andThen(Result::ok).andThen(ok -> err()).flatMap(Result::ok),
+            ok().flatMap(Result::ok).flatMap(ok -> err()).flatMap(Result::ok),
             is(err())
         );
     }
 
     @Test
-    public void listOfResultsCollectsToResultOverList() {
+    void listOfResultsCollectsToResultOverList() {
         assertThat(
             Stream.of(ok(), ok(), ok()).collect(Result.andCollector())
                 .map(List::size),
@@ -180,7 +180,7 @@ public class ResultTest {
     }
 
     @Test
-    public void listWithErrorAndCollectsToError() {
+    void listWithErrorAndCollectsToError() {
         assertThat(
             Stream.<Result<Unit, Exception>>of(ok(), ok(), ok(), err())
                 .collect(Result.andCollector()),
@@ -189,7 +189,7 @@ public class ResultTest {
     }
 
     @Test
-    public void listWithOkOrCollectsToOk() {
+    void listWithOkOrCollectsToOk() {
         Result<Integer, Exception> result = Stream.<Result<Unit, Exception>>of(ok(), err(), err())
             .collect(Result.orCollector()).map(List::size);
         assertThat(

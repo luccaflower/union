@@ -12,34 +12,34 @@ import static option.Option.some;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class OptionTest {
+class OptionTest {
     @Test
-    public void throwsWhenUnwrappingNone() {
+    void throwsWhenUnwrappingNone() {
         Option<?> none = none();
         assertThat(none::unwrap, throwsA(UnwrappedNone.class));
     }
 
     @Test
-    public void returnsObjectWhenUnwrappingSome() {
+    void returnsObjectWhenUnwrappingSome() {
         Option<String> something = some("something");
         assertThat(something.unwrap(), is("something"));
     }
 
     @Test
-    public void noneMapsToNone() {
+    void noneMapsToNone() {
         Option<Dummy> nothing = none();
         assertThat(nothing.map(none -> none), is(none()));
     }
 
     @Test
-    public void someMapsToOther() {
+    void someMapsToOther() {
         Option<String> something = some("something");
         String other = "or the other";
         assertThat(something.map(some -> other).unwrap(), is("or the other"));
     }
 
     @Test
-    public void mapOrReturnsDefaultOnNone() {
+    void mapOrReturnsDefaultOnNone() {
         Option<String> none = none();
         String defaultValue = "nothing was found";
         assertThat(
@@ -49,7 +49,7 @@ public class OptionTest {
     }
 
     @Test
-    public void mapOrReturnsMappedValueOnSome() {
+    void mapOrReturnsMappedValueOnSome() {
         Option<String> some = some("something");
         String defaultValue = "not found";
         assertThat(
@@ -59,7 +59,7 @@ public class OptionTest {
     }
 
     @Test
-    public void noneMapOrElseReturnsDefault() {
+    void noneMapOrElseReturnsDefault() {
         assertThat(
             none().mapOrElse(() -> "thing", v -> "other"),
             is("thing")
@@ -67,99 +67,99 @@ public class OptionTest {
     }
 
     @Test
-    public void someIsSome() {
+    void someIsSome() {
         assertThat(some(new Dummy()).isSome(), is(true));
     }
 
     @Test
-    public void noneIsNotSome() {
+    void noneIsNotSome() {
         assertThat(none().isSome(), is(false));
     }
 
     @Test
-    public void someIsNotNone() {
+    void someIsNotNone() {
         assertThat(some(new Dummy()).isNone(), is(false));
     }
 
     @Test
-    public void noneIsNone() {
+    void noneIsNone() {
         assertThat(none().isNone(), is(true));
     }
 
     @Test
-    public void noneOrSomeReturnsSome() {
+    void noneOrSomeReturnsSome() {
         assertThat(none().or(some("thing")), is(some("thing")));
     }
 
     @Test
-    public void someOrNoneReturnsSome() {
+    void someOrNoneReturnsSome() {
         assertThat(some("some").or(none()), is(some("some")));
     }
 
     @Test
-    public void noneOrNoneReturnsNone() {
+    void noneOrNoneReturnsNone() {
         assertThat(none().or(none()), is(none()));
     }
 
     @Test
-    public void someOrSomeIsFirstSome() {
+    void someOrSomeIsFirstSome() {
         assertThat(some("one").or(some("other")), is(some("one")));
     }
 
     @Test
-    public void someOrElseReturnsSome() {
+    void someOrElseReturnsSome() {
         assertThat(some("one").orElse(() -> some("other")), is(some("one")));
     }
 
     @Test
-    public void noneOrElseCallsElse() {
+    void noneOrElseCallsElse() {
         assertThat(none().orElse(() -> some("other")), is(some("other")));
     }
 
     @Test
-    public void noneXorNoneReturnsNone() {
+    void noneXorNoneReturnsNone() {
         assertThat(none().xor(none()), is(none()));
     }
 
     @Test
-    public void someXorSomeReturnsNone() {
+    void someXorSomeReturnsNone() {
         assertThat(some("one").xor(some("other")), is(none()));
     }
 
     @Test
-    public void someXorNoneReturnsSome() {
+    void someXorNoneReturnsSome() {
         assertThat(some("one").xor(none()), is(some("one")));
     }
 
     @Test
-    public void noneXorSomeReturnsSome() {
+    void noneXorSomeReturnsSome() {
         assertThat(none().xor(some("other")), is(some("other")));
     }
 
     @Test
-    public void flattenOnNoneReturnsNone() {
+    void flattenOnNoneReturnsNone() {
         assertThat(none().flatten(), is(none()));
     }
 
     @Test
-    public void flattenOnNestedNoneReturnsNone() {
+    void flattenOnNestedNoneReturnsNone() {
         assertThat(some(none()).flatten(), is(none()));
     }
 
     @Test
-    public void flattenOnSomeReturnsSome() {
+    void flattenOnSomeReturnsSome() {
         var thing = new Dummy();
         assertThat(some(thing).flatten(), is(some(thing)));
     }
 
     @Test
-    public void flattenOnNestedSomeReturnsTheInnermostSome() {
+    void flattenOnNestedSomeReturnsTheInnermostSome() {
         var thing = new Dummy();
         assertThat(some(some(some(thing))).flatten(), is(some(thing)));
     }
 
     @Test
-    public void noneMatchesToNone() {
+    void noneMatchesToNone() {
         String result = none().matches(
             some -> "some",
             () ->  "none"
@@ -169,7 +169,7 @@ public class OptionTest {
     }
 
     @Test
-    public void someMatchesToSome() {
+    void someMatchesToSome() {
         String result = some(new Dummy()).matches(
             some -> "some",
             () -> "none"
@@ -178,7 +178,7 @@ public class OptionTest {
     }
 
     @Test
-    public void listReducesToOption() {
+    void listReducesToOption() {
         assertThat(
             Stream.of(some(1), some(2), some(3), none())
                 //java is silly
@@ -189,7 +189,7 @@ public class OptionTest {
     }
 
     @Test
-    public void listOfSomeCollectsToSomeOverList() {
+    void listOfSomeCollectsToSomeOverList() {
         assertThat(
             Stream.<Option<Integer>>of(some(1), some(2), some(3), none())
                 .collect(Option.orCollector())
@@ -199,7 +199,7 @@ public class OptionTest {
     }
 
     @Test
-    public void listWithSingleNoneAndCollectsToNone() {
+    void listWithSingleNoneAndCollectsToNone() {
         assertThat(
             Stream.<Option<Integer>>of(some(1), some(2), some(3), none())
                 .collect(Option.andCollector()),
@@ -208,24 +208,24 @@ public class OptionTest {
     }
 
     @Test
-    public void ifNoneRunsActionOnNone() {
+    void ifNoneRunsActionOnNone() {
         var wasRun = new AtomicBoolean(false);
         none().ifNone(() -> wasRun.set(true));
         assertThat(wasRun.get(), is(true));
     }
 
     @Test
-    public void noneAndNoneIsNone() {
+    void noneAndNoneIsNone() {
         assertThat(none().and(none()), is(none()));
     }
 
     @Test
-    public void someAndNoneIsNone() {
+    void someAndNoneIsNone() {
         assertThat(some("thing").and(none()), is(none()));
     }
 
     @Test
-    public void someAndSomeIsSecondSome() {
+    void someAndSomeIsSecondSome() {
         assertThat(some("one").and(some("other")), is(some("other")));
     }
 }

@@ -63,7 +63,7 @@ public class Some<T> implements Option<T> {
 
     @Override
     public <R> Option<R> flatMap(Function<T, Option<R>> func) {
-        return func.apply(something).flatten();
+        return func.apply(something);
     }
 
     @Override
@@ -155,5 +155,10 @@ public class Some<T> implements Option<T> {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return 9 * something.hashCode();
     }
 }

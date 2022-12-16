@@ -71,7 +71,7 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
     @Override
     public <R, F extends Exception> Result<R, F> flatMap(Function<T, Result<R, F>> func) {
-        return func.apply(value).flatten();
+        return func.apply(value);
     }
 
     @Override
@@ -157,5 +157,9 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     public boolean equals(Object other) {
         return other instanceof Ok
             && ((Ok<?, ?>) other).value.equals(this.value);
+    }
+
+    public int hashCode() {
+        return 13 * value.hashCode();
     }
 }

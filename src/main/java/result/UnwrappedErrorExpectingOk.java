@@ -14,4 +14,9 @@ public class UnwrappedErrorExpectingOk extends RuntimeException {
         return other instanceof UnwrappedErrorExpectingOk
             && ((UnwrappedErrorExpectingOk) other).getMessage().equals(getMessage());
     }
+
+    @Override
+    public int hashCode() {
+        return 31 * getMessage().hashCode();
+    }
 }

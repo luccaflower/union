@@ -70,6 +70,7 @@ public class Err<T, E extends Exception> implements Result<T, E> {
         return Result.err(error);
     }
 
+    @SuppressWarnings("unchecked")
     public <R, F extends Exception> Result<R, F> flatMap(
         Function<T, Result<R, F>> func
     ) {
@@ -158,5 +159,10 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     public boolean equals(Object other) {
         return other instanceof Err
             && ((Err<?, ?>) other).error.equals(this.error);
+    }
+
+    @Override
+    public int hashCode() {
+        return 5 * error.hashCode();
     }
 }
