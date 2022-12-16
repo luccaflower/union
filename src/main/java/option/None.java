@@ -20,7 +20,7 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public T unwrapOr(Supplier<T> defaultFunc) {
+    public T unwrapOrElse(Supplier<T> defaultFunc) {
         return defaultFunc.get();
     }
 

@@ -103,7 +103,7 @@ public interface Option<T> {
 
     T unwrap();
     T unwrapOr(T defaultValue);
-    T unwrapOr(Supplier<T> defaultFunc);
+    T unwrapOrElse(Supplier<T> defaultFunc);
     T expect(String reason);
     Option<T> ifSome(Consumer<T> onSome);
     @SuppressWarnings("UnusedReturnValue")

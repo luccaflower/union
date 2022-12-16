@@ -26,7 +26,7 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public T unwrapOr(Supplier<T> defaultFunc) {
+    public T unwrapOrElse(Supplier<T> defaultFunc) {
         return something;
     }
 
