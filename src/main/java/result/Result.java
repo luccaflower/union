@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+import static option.Option.some;
 import static result.Unit.unit;
 
 @SuppressWarnings("unused")
@@ -27,6 +28,10 @@ public interface Result<T, E extends Exception> {
         return err(new ResultException());
     }
     T unwrap();
+    E unwrapErr();
+    <R, F extends Exception> Result<R, F> flatMap(Function<T, Result<R, F>> func);
+
+    <R, F extends Exception> Result<R, F> flatMapErr(Function<E, Result<R, F>> func);
     default T unwrapOr(T defaultValue) {
         try {
             return unwrap();
@@ -37,7 +42,6 @@ public interface Result<T, E extends Exception> {
     default T unwrapOrElse(Supplier<T> defaultFunc) {
         return unwrapOr(defaultFunc.get());
     }
-    E unwrapErr();
     default T expect(String reason) {
         try {
             return unwrap();
@@ -64,17 +68,40 @@ public interface Result<T, E extends Exception> {
             return err;
         });
     }
-    boolean isOk();
-    boolean isOkAnd(Predicate<T> p);
-    boolean isErr();
-    boolean isErrAnd(Predicate<E> p);
-    Option<T> okToOption();
-    Option<E> errToOption();
+    default boolean isOk() {
+        return map(ok -> true)
+            .flatMapErr(err -> ok(false))
+            .unwrap();
+    }
+    default boolean isOkAnd(Predicate<T> p) {
+        return map(p::test).unwrapOr(false);
+    }
+    default boolean isErr() {
+        return map(ok -> false)
+            .flatMapErr(err -> ok(true))
+            .unwrap();
+    }
+    default boolean isErrAnd(Predicate<E> p) {
+        return map(ok -> false)
+            .flatMapErr(err -> ok(p.test(err)))
+            .unwrap();
+    }
+    default Option<T> okToOption() {
+        return map(Option::some)
+            .flatMapErr(err -> ok(Option.<T>none()))
+            .unwrap();
+    }
+    default Option<E> errToOption() {
+        return map(ok -> Option.<E>none())
+            .flatMapErr(err -> ok(some(err)))
+            .unwrap();
+    }
     default <R> Result<R, E> map(Function<T, R> func) {
         return flatMap(ok -> ok(func.apply(ok)));
     }
-    <R, F extends Exception> Result<R, F> flatMap(Function<T, Result<R, F>> func);
-    <F extends Exception> Result<T, F> mapErr(Function<E, F> func);
+    default <F extends Exception> Result<T, F> mapErr(Function<E, F> func) {
+        return flatMapErr(err -> err(func.apply(err)));
+    }
     default <R> R mapOr(R defaultValue, Function<T, R> func) {
         return map(func).unwrapOr(defaultValue);
     }
@@ -88,15 +115,27 @@ public interface Result<T, E extends Exception> {
     default <R> Result<R, E> andThen(Function<T, R> func) {
         return map(func);
     }
-    <F extends Exception> Result<T, F> or(Result<T, F> res);
+    default <F extends Exception> Result<T, F> or(Result<T, F> res) {
+        return flatMapErr(err -> res);
+    }
     default boolean contains(T candidate) {
         return isOkAnd(ok -> ok.equals(candidate));
     }
     default boolean containsErr(E candidate) {
         return isErrAnd(err -> err.equals(candidate));
     }
-    <R, F extends Exception> Result<R, F> flatten();
-    <R> R matches(Function<T, R> ok, Function<E, R> err);
+    @SuppressWarnings("unchecked")
+    default <R, F extends Exception> Result<R, F> flatten() {
+        return flatMap(ok -> ok instanceof Result<?,?>
+            ? ((Result<?, ?>) ok).flatten()
+            : (Result<R, F>) Result.ok(ok));
+
+    }
+    default <R> R matches(Function<T, R> ok, Function<E, R> err) {
+        return map(ok)
+            .flatMapErr(e -> ok(err.apply(e)))
+            .unwrap();
+    }
 
     static <T, E extends Exception> Collector<Result<T, E>, List<Result<T, E>>, Result<List<T>, E>> andCollector() {
         return new Collector<>() {

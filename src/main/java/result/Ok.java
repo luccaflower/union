@@ -1,12 +1,9 @@
 package result;
 
-import option.*;
 
 import java.util.function.*;
 import java.util.stream.*;
 
-import static option.Option.none;
-import static option.Option.some;
 @SuppressWarnings("unused")
 public class Ok<T, E extends Exception> implements Result<T, E>{
     private final T value;
@@ -21,43 +18,14 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
-    public boolean isOk() {
-        return true;
-    }
-
-    @Override
-    public boolean isErr() {
-        return false;
-    }
-
-    @Override
-    public boolean isOkAnd(Predicate<T> p) {
-        return p.test(value);
-    }
-
-    @Override
-    public boolean isErrAnd(Predicate<E> p) {
-        return false;
-    }
-
-    @Override
-    public Option<T> okToOption() {
-        return some(value);
-    }
-
-    @Override
-    public Option<E> errToOption() {
-        return none();
-    }
-
-    @Override
     public <R, F extends Exception> Result<R, F> flatMap(Function<T, Result<R, F>> func) {
         return func.apply(value);
     }
 
     @Override
-    public <F extends Exception> Result<T, F> mapErr(Function<E, F> func) {
-        return Result.ok(value);
+    @SuppressWarnings("unchecked")
+    public <R, F extends Exception> Result<R, F> flatMapErr(Function<E, Result<R, F>> func) {
+        return Result.ok((R) value);
     }
 
     @Override
@@ -70,11 +38,6 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
         throw new UnwrappedOkExpectingError();
     }
     @Override
-    public <F extends Exception> Result<T, F> or(Result<T, F> res) {
-        return Result.ok(value);
-    }
-
-    @Override
     public boolean containsErr(E candidate) {
         return false;
     }
@@ -82,14 +45,9 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     @Override
     @SuppressWarnings("unchecked")
     public <R, F extends Exception> Result<R, F> flatten() {
-        return value instanceof Result<?,?>
-            ? ((Result<?, ?>) value).flatten()
-            : (Result<R, F>) Result.ok(value);
-    }
-
-    @Override
-    public <R> R matches(Function<T, R> ok, Function<E, R> err) {
-        return ok.apply(value);
+        return flatMap(ok -> ok instanceof Result<?,?>
+            ? ((Result<?, ?>) ok).flatten()
+            : (Result<R, F>) Result.ok(ok));
     }
 
     @Override

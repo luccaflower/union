@@ -90,11 +90,6 @@ public interface ForwardingResult<T, E extends Exception> extends Result<T, E> {
     }
 
     @Override
-    default <F extends Exception> Result<T, F> mapErr(Function<E, F> func) {
-        return inner().mapErr(func);
-    }
-
-    @Override
     default <R> R mapOr(R defaultValue, Function<T, R> func) {
         return inner().mapOr(defaultValue, func);
     }

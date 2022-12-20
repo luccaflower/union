@@ -1,13 +1,8 @@
 package result;
 
-import option.*;
 
 import java.util.function.*;
 import java.util.stream.*;
-
-import static option.Option.none;
-import static option.Option.some;
-
 @SuppressWarnings("unused")
 public class Err<T, E extends Exception> implements Result<T, E> {
     private final E error;
@@ -20,41 +15,16 @@ public class Err<T, E extends Exception> implements Result<T, E> {
         throw new UnwrappedErrorExpectingOk(error);
     }
     @Override
-    public boolean isOk() {
-        return false;
-    }
-
-    @Override
-    public boolean isErr() {
-        return true;
-    }
-
-    @Override
-    public boolean isOkAnd(Predicate<T> p) {
-        return false;
-    }
-
-    @Override
-    public boolean isErrAnd(Predicate<E> p) {
-        return p.test(error);
-    }
-
-    @Override
-    public Option<T> okToOption() {
-        return none();
-    }
-
-    @Override
-    public Option<E> errToOption() {
-        return some(error);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public <R, F extends Exception> Result<R, F> flatMap(
         Function<T, Result<R, F>> func
     ) {
         return Result.err((F) error);
+    }
+
+    @Override
+    public <R, F extends Exception> Result<R, F> flatMapErr(Function<E, Result<R, F>> func) {
+        return func.apply(error);
     }
 
     @Override
@@ -78,24 +48,8 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
 
     @Override
-    public <F extends Exception> Result<T, F> or(Result<T, F> res) {
-        return res;
-    }
-
-    @Override
     public boolean containsErr(E candidate) {
         return candidate.equals(error);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <R, F extends Exception> Result<R, F> flatten() {
-        return (Result<R, F>) Result.err(error);
-    }
-
-    @Override
-    public <R> R matches(Function<T, R> ok, Function<E, R> err) {
-        return err.apply(error);
     }
 
     @Override
