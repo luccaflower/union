@@ -17,11 +17,6 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public boolean equals(Object other) {
-        return other instanceof None<?>;
-    }
-
-    @Override
     public Stream<T> stream() {
         return Stream.empty();
     }
@@ -29,6 +24,10 @@ public class None<T> implements Option<T> {
     @Override
     public Option<T> orElse(Supplier<Option<T>> other) {
         return other.get();
+    }
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof None<?>;
     }
 
     @Override public int hashCode() {

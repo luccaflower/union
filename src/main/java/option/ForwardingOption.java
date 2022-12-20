@@ -26,8 +26,4 @@ public interface ForwardingOption<T> extends Option<T> {
         return inner().orElse(other);
     }
 
-    @Override
-    default <R> Option<R> flatten() {
-        return inner().flatten();
-    }
 }

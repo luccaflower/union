@@ -22,14 +22,15 @@ public class Some<T> implements Option<T> {
         return func.apply(something);
     }
 
-    @Override
-    public Stream<T> stream() {
-        return Stream.of(something);
-    }
 
     @Override
     public Option<T> orElse(Supplier<Option<T>> other) {
         return this;
+    }
+
+    @Override
+    public Stream<T> stream() {
+        return Stream.of(something);
     }
 
     @Override

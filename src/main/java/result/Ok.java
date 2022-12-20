@@ -43,14 +43,6 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <R, F extends Exception> Result<R, F> flatten() {
-        return flatMap(ok -> ok instanceof Result<?,?>
-            ? ((Result<?, ?>) ok).flatten()
-            : (Result<R, F>) Result.ok(ok));
-    }
-
-    @Override
     public boolean equals(Object other) {
         return other instanceof Ok
             && ((Ok<?, ?>) other).value.equals(this.value);

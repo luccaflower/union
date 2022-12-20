@@ -32,6 +32,7 @@ public interface Result<T, E extends Exception> {
     <R, F extends Exception> Result<R, F> flatMap(Function<T, Result<R, F>> func);
 
     <R, F extends Exception> Result<R, F> flatMapErr(Function<E, Result<R, F>> func);
+    Stream<T> stream();
     default T unwrapOr(T defaultValue) {
         try {
             return unwrap();
@@ -70,8 +71,7 @@ public interface Result<T, E extends Exception> {
     }
     default boolean isOk() {
         return map(ok -> true)
-            .flatMapErr(err -> ok(false))
-            .unwrap();
+            .unwrapOr(false);
     }
     default boolean isOkAnd(Predicate<T> p) {
         return map(p::test).unwrapOr(false);
@@ -108,7 +108,6 @@ public interface Result<T, E extends Exception> {
     default <R> R mapOrElse(Function<E, R> onErr, Function<T, R> onOk) {
         return matches(onOk, onErr);
     }
-    Stream<T> stream();
     default <R, F extends Exception> Result<R, F> and(Result<R, F> other) {
         return flatMap(ok -> other);
     }

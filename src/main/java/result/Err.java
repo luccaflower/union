@@ -28,28 +28,13 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
 
     @Override
-    public <F extends Exception> Result<T, F> mapErr(Function<E, F> func) {
-        return Result.err(func.apply(error));
-    }
-
-    @Override
-    public Stream<T> stream() {
-        return Stream.empty();
-    }
-
-    @Override
     public E unwrapErr() {
         return error;
     }
 
     @Override
-    public <R> Result<R, E> andThen(Function<T, R> func) {
-        return Result.err(error);
-    }
-
-    @Override
-    public boolean containsErr(E candidate) {
-        return candidate.equals(error);
+    public Stream<T> stream() {
+        return Stream.empty();
     }
 
     @Override
