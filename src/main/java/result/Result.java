@@ -26,39 +26,75 @@ public interface Result<T, E extends Exception> {
     static<T> Err<T, Exception> err() {
         return err(new ResultException());
     }
-
-    class ResultException extends Exception {
-        @Override
-        public boolean equals(Object other) {
-            return other instanceof ResultException;
+    T unwrap();
+    default T unwrapOr(T defaultValue) {
+        try {
+            return unwrap();
+        } catch (UnwrappedErrorExpectingOk ignored) {
+            return defaultValue;
         }
     }
-
-    T unwrap();
-    T unwrapOr(T defaultValue);
-    T unwrapOrElse(Supplier<T> defaultFunc);
+    default T unwrapOrElse(Supplier<T> defaultFunc) {
+        return unwrapOr(defaultFunc.get());
+    }
     E unwrapErr();
-    T expect(String reason);
-    E expectErr(String message);
-    Result<T, E> ifOk(Consumer<T> onOk);
-    Result<T, E> ifErr(Consumer<E> onErr);
+    default T expect(String reason) {
+        try {
+            return unwrap();
+        } catch (UnwrappedErrorExpectingOk ignored) {
+            throw new UnwrappedErrorExpectingOk(reason, unwrapErr());
+        }
+    }
+    default E expectErr(String message) {
+        try {
+            return unwrapErr();
+        } catch (UnwrappedOkExpectingError ignored) {
+            throw new UnwrappedOkExpectingError(message);
+        }
+    }
+    default Result<T, E> ifOk(Consumer<T> onOk) {
+        return map(ok -> {
+            onOk.accept(ok);
+            return ok;
+        });
+    }
+    default Result<T, E> ifErr(Consumer<E> onErr) {
+        return mapErr(err -> {
+            onErr.accept(err);
+            return err;
+        });
+    }
     boolean isOk();
     boolean isOkAnd(Predicate<T> p);
     boolean isErr();
     boolean isErrAnd(Predicate<E> p);
     Option<T> okToOption();
     Option<E> errToOption();
-    <R> Result<R, E> map(Function<T, R> func);
+    default <R> Result<R, E> map(Function<T, R> func) {
+        return flatMap(ok -> ok(func.apply(ok)));
+    }
     <R, F extends Exception> Result<R, F> flatMap(Function<T, Result<R, F>> func);
     <F extends Exception> Result<T, F> mapErr(Function<E, F> func);
-    <R> R mapOr(R defaultValue, Function<T, R> func);
-    <R> R mapOrElse(Function<E, R> onErr, Function<T, R> onOk);
+    default <R> R mapOr(R defaultValue, Function<T, R> func) {
+        return map(func).unwrapOr(defaultValue);
+    }
+    default <R> R mapOrElse(Function<E, R> onErr, Function<T, R> onOk) {
+        return matches(onOk, onErr);
+    }
     Stream<T> stream();
-    <R, F extends Exception> Result<R, F> and(Result<R, F> res);
-    <R> Result<R, E> andThen(Function<T, R> func);
+    default <R, F extends Exception> Result<R, F> and(Result<R, F> other) {
+        return flatMap(ok -> other);
+    }
+    default <R> Result<R, E> andThen(Function<T, R> func) {
+        return map(func);
+    }
     <F extends Exception> Result<T, F> or(Result<T, F> res);
-    boolean contains(T candidate);
-    boolean containsErr(E candidate);
+    default boolean contains(T candidate) {
+        return isOkAnd(ok -> ok.equals(candidate));
+    }
+    default boolean containsErr(E candidate) {
+        return isErrAnd(err -> err.equals(candidate));
+    }
     <R, F extends Exception> Result<R, F> flatten();
     <R> R matches(Function<T, R> ok, Function<E, R> err);
 
@@ -128,7 +164,7 @@ public interface Result<T, E extends Exception> {
             public Function<List<Result<T, E>>, Result<List<T>, E>> finisher() {
                 return list -> list.stream().reduce(
                     err().flatten(),
-                    (acc, e) -> e.<List<T>>map(
+                    (acc, e) -> e.map(
                         ok -> {
                             var res = acc.unwrapOr(new ArrayList<>());
                             res.add(ok);
@@ -142,12 +178,22 @@ public interface Result<T, E extends Exception> {
                         .or(other)
                 );
             }
-
-
             @Override
             public Set<Characteristics> characteristics() {
                 return Set.of(Characteristics.UNORDERED);
             }
         };
+    }
+
+    class ResultException extends Exception {
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof ResultException;
+        }
+
+        @Override
+        public int hashCode() {
+            return 1;
+        }
     }
 }

@@ -21,21 +21,6 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
-    public T unwrapOr(T defaultValue) {
-        return value;
-    }
-
-    @Override
-    public T unwrapOrElse(Supplier<T> defaultFunc) {
-        return value;
-    }
-
-    @Override
-    public T expect(String reason) {
-        return value;
-    }
-
-    @Override
     public boolean isOk() {
         return true;
     }
@@ -66,22 +51,8 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
-    public <R> Result<R, E> map(Function<T, R> func) {
-        return Result.ok(func.apply(value));
-    }
-    @Override
     public <R, F extends Exception> Result<R, F> flatMap(Function<T, Result<R, F>> func) {
         return func.apply(value);
-    }
-
-    @Override
-    public <R> R mapOr(R defaultValue, Function<T, R> func) {
-        return func.apply(value);
-    }
-
-    @Override
-    public <R> R mapOrElse(Function<E, R> onErr, Function<T, R> onOk) {
-        return onOk.apply(value);
     }
 
     @Override
@@ -95,44 +66,12 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
-    public E expectErr(String message) {
-        throw new UnwrappedOkExpectingError(message);
-    }
-
-    @Override
-    public Result<T, E> ifOk(Consumer<T> onOk) {
-        onOk.accept(value);
-        return this;
-    }
-
-    @Override
-    public Result<T, E> ifErr(Consumer<E> onErr) {
-        return this;
-    }
-
-    @Override
     public E unwrapErr() {
         throw new UnwrappedOkExpectingError();
     }
-
-    @Override
-    public <R, F extends Exception> Result<R, F> and(Result<R, F> res) {
-        return res;
-    }
-
-    @Override
-    public <R> Result<R, E> andThen(Function<T, R> func) {
-        return Result.ok(func.apply(value));
-    }
-
     @Override
     public <F extends Exception> Result<T, F> or(Result<T, F> res) {
         return Result.ok(value);
-    }
-
-    @Override
-    public boolean contains(T candidate) {
-        return value.equals(candidate);
     }
 
     @Override

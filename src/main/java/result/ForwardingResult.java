@@ -110,8 +110,8 @@ public interface ForwardingResult<T, E extends Exception> extends Result<T, E> {
     }
 
     @Override
-    default <R, F extends Exception> Result<R, F> and(Result<R, F> res) {
-        return inner().and(res);
+    default <R, F extends Exception> Result<R, F> and(Result<R, F> other) {
+        return inner().and(other);
     }
 
     @Override
