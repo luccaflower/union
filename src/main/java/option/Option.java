@@ -23,6 +23,85 @@ public interface Option<T> {
             : none();
     }
 
+    T unwrap();
+    <R> Option<R> flatMap(Function<T, Option<R>> func);
+    default T unwrapOr(T defaultValue) {
+        try {
+            return unwrap();
+        } catch (UnwrappedNone ignored) {
+            return defaultValue;
+        }
+    }
+    default T unwrapOrElse(Supplier<T> defaultFunc) {
+        return unwrapOr(defaultFunc.get());
+    }
+    default T expect(String reason) {
+        return unwrapOrElse(() -> { throw new UnwrappedNone(reason); });
+    }
+    default Option<T> ifSome(Consumer<T> onSome) {
+        return map(some -> {
+            onSome.accept(some);
+            return some;
+        });
+    }
+    @SuppressWarnings("UnusedReturnValue")
+    Option<T> ifNone(Action onNone);
+    default <E extends Exception> Result<T, E> okOr(E error) {
+        return this.<Result<T, E>>map(Result::ok)
+            .unwrapOr(Result.err(error));
+    }
+    default <E extends Exception> Result<T, E> okOrElse(Supplier<E> error) {
+        return okOr(error.get());
+    }
+    default <R> Option<R> map(Function<T, R> func) {
+        return flatMap(some -> some(func.apply(some)));
+    }
+    default <R> R mapOr(R defaultValue, Function<T, R> func) {
+        return map(func).unwrapOr(defaultValue);
+    }
+    default <R> R mapOrElse(Supplier<R> defaultFunc, Function<T, R> presentFunc) {
+        return mapOr(defaultFunc.get(), presentFunc);
+    }
+    default boolean isSome() {
+        return map(some -> true)
+            .unwrapOr(false);
+    }
+    default boolean isSomeAnd(Predicate<T> p) {
+        return map(p::test)
+            .unwrapOr(false);
+    }
+    default boolean isNone() {
+        return map(some -> false)
+            .unwrapOr(true);
+    }
+    Stream<T> stream();
+    Option<T> or(Option<T> other);
+    Option<T> orElse(Supplier<Option<T>> other);
+    default boolean contains(T candidate) {
+        return isSomeAnd(some -> some.equals(candidate));
+    }
+    default <R> Option<R> and(Option<R> other) {
+        return flatMap(some -> other);
+    }
+    default <R> Option<R> andThen(Function<T, Option<R>> func) {
+        return flatMap(func);
+    }
+    default Option<T> filter(Predicate<T> p) {
+        return flatMap(some -> p.test(some) ? some(some) : none());
+    }
+    Option<T> xor(Option<T> other);
+
+    @SuppressWarnings("unchecked")
+    default <R> Option<R> flatten() {
+        return flatMap(some -> some instanceof Option<?>
+            ? ((Option<?>) some).flatten()
+            : (Option<R>) Option.some(some));
+    }
+    default <R> R matches(Function<T, R> some,  Supplier<R> none) {
+        return map(some)
+            .unwrapOrElse(none);
+    }
+
     static <T> Collector<Option<T>, List<T>, Option<List<T>>> orCollector() {
         return new Collector<>() {
             @Override
@@ -100,33 +179,6 @@ public interface Option<T> {
             }
         };
     }
-
-    T unwrap();
-    T unwrapOr(T defaultValue);
-    T unwrapOrElse(Supplier<T> defaultFunc);
-    T expect(String reason);
-    Option<T> ifSome(Consumer<T> onSome);
-    @SuppressWarnings("UnusedReturnValue")
-    Option<T> ifNone(Action onNone);
-    <E extends Exception> Result<T, E> okOr(E error);
-    <E extends Exception> Result<T, E> okOrElse(Supplier<E> error);
-    <R> Option<R> map(Function<T, R> func);
-    <R> Option<R> flatMap(Function<T, Option<R>> func);
-    <R> R mapOr(R defaultValue, Function<T, R> func);
-    <R> R mapOrElse(Supplier<R> defaultFunc, Function<T, R> presentFunc);
-    boolean isSome();
-    boolean isSomeAnd(Predicate<T> p);
-    boolean isNone();
-    Stream<T> stream();
-    Option<T> or(Option<T> other);
-    Option<T> orElse(Supplier<Option<T>> other);
-    boolean contains(T candidate);
-    <R> Option<R> and(Option<R> other);
-    <R> Option<R> andThen(Function<T, Option<R>> func);
-    Option<T> filter(Predicate<T> p);
-    Option<T> xor(Option<T> other);
-    <R> Option<R> flatten();
-    <R> R matches(Function<T, R> some,  Supplier<R> none);
 
     @FunctionalInterface
     interface Action {
