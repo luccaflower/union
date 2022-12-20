@@ -209,7 +209,7 @@ public interface Result<T, E extends Exception> {
                             res.add(ok);
                             return res;
                         }
-                    ).or(acc),
+                    ).<E>or(acc),
                     (one, other) -> one.and(other).map(ok -> {
                         ok.addAll(other.unwrap());
                         return ok;

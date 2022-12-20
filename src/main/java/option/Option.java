@@ -25,6 +25,8 @@ public interface Option<T> {
 
     T unwrap();
     <R> Option<R> flatMap(Function<T, Option<R>> func);
+    Option<T> orElse(Supplier<Option<T>> other);
+    Stream<T> stream();
     default T unwrapOr(T defaultValue) {
         try {
             return unwrap();
@@ -45,7 +47,12 @@ public interface Option<T> {
         });
     }
     @SuppressWarnings("UnusedReturnValue")
-    Option<T> ifNone(Action onNone);
+    default Option<T> ifNone(Action onNone) {
+        return orElse(() -> {
+            onNone.run();
+            return this;
+        });
+    }
     default <E extends Exception> Result<T, E> okOr(E error) {
         return this.<Result<T, E>>map(Result::ok)
             .unwrapOr(Result.err(error));
@@ -74,9 +81,9 @@ public interface Option<T> {
         return map(some -> false)
             .unwrapOr(true);
     }
-    Stream<T> stream();
-    Option<T> or(Option<T> other);
-    Option<T> orElse(Supplier<Option<T>> other);
+    default Option<T> or(Option<T> other) {
+        return orElse(() -> other);
+    }
     default boolean contains(T candidate) {
         return isSomeAnd(some -> some.equals(candidate));
     }
@@ -89,7 +96,9 @@ public interface Option<T> {
     default Option<T> filter(Predicate<T> p) {
         return flatMap(some -> p.test(some) ? some(some) : none());
     }
-    Option<T> xor(Option<T> other);
+    default Option<T> xor(Option<T> other) {
+        return isSome() ^ other.isSome() ? or(other) : none();
+    }
 
     @SuppressWarnings("unchecked")
     default <R> Option<R> flatten() {

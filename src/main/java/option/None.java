@@ -12,12 +12,6 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> ifNone(Action onNone) {
-        onNone.run();
-        return this;
-    }
-
-    @Override
     public <R> Option<R> flatMap(Function<T, Option<R>> func) {
         return Option.none();
     }
@@ -33,18 +27,8 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> or(Option<T> other) {
-        return other;
-    }
-
-    @Override
     public Option<T> orElse(Supplier<Option<T>> other) {
         return other.get();
-    }
-
-    @Override
-    public Option<T> xor(Option<T> other) {
-        return other;
     }
 
     @Override public int hashCode() {

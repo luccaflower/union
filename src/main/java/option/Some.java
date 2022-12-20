@@ -18,11 +18,6 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> ifNone(Action onNone) {
-        return this;
-    }
-
-    @Override
     public <R> Option<R> flatMap(Function<T, Option<R>> func) {
         return func.apply(something);
     }
@@ -33,20 +28,8 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public Option<T> or(Option<T> some) {
-        return this;
-    }
-
-    @Override
     public Option<T> orElse(Supplier<Option<T>> other) {
         return this;
-    }
-
-    @Override
-    public Option<T> xor(Option<T> other) {
-        return other.isSome()
-            ? Option.none()
-            : this;
     }
 
     @Override
