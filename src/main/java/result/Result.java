@@ -36,7 +36,10 @@ public interface Result<T, E extends Exception> {
     <R, F extends Exception> Result<R, F> flatMapErr(
         Function<? super E, ? extends Result<R, F>> func
     );
-    Stream<T> stream();
+    default Stream<T> stream() {
+        return map(Stream::of)
+            .unwrapOr(Stream.empty());
+    }
     default T unwrapOr(T defaultValue) {
         try {
             return unwrap();

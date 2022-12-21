@@ -26,7 +26,10 @@ public interface Option<T> {
     T unwrap();
     <R> Option<R> flatMap(Function<? super T, ? extends Option<R>> func);
     Option<T> orElse(Supplier<? extends Option<T>> other);
-    Stream<T> stream();
+    default Stream<T> stream() {
+        return map(Stream::of)
+            .unwrapOr(Stream.empty());
+    }
     default T unwrapOr(T defaultValue) {
         try {
             return unwrap();
