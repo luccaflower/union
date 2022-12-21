@@ -2,7 +2,6 @@ package option;
 
 
 import java.util.function.*;
-import java.util.stream.*;
 
 @SuppressWarnings("unused")
 public class None<T> implements Option<T> {

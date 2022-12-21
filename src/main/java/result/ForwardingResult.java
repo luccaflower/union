@@ -1,7 +1,6 @@
 package result;
 
 import java.util.function.*;
-import java.util.stream.*;
 
 @SuppressWarnings("unused")
 public interface ForwardingResult<T, E extends Exception> extends Result<T, E> {

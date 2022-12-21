@@ -2,7 +2,6 @@ package result;
 
 
 import java.util.function.*;
-import java.util.stream.*;
 @SuppressWarnings("unused")
 public class Err<T, E extends Exception> implements Result<T, E> {
     private final E error;

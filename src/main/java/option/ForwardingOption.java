@@ -1,7 +1,6 @@
 package option;
 
 import java.util.function.*;
-import java.util.stream.*;
 
 @SuppressWarnings("unused")
 public interface ForwardingOption<T> extends Option<T> {
