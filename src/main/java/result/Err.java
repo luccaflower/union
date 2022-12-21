@@ -35,11 +35,6 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
 
     @Override
-    public Stream<T> stream() {
-        return Stream.empty();
-    }
-
-    @Override
     public boolean equals(Object other) {
         return other instanceof Err
             && ((Err<?, ?>) other).error.equals(this.error);

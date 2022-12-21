@@ -17,11 +17,6 @@ public class None<T> implements Option<T> {
     }
 
     @Override
-    public Stream<T> stream() {
-        return Stream.empty();
-    }
-
-    @Override
     public Option<T> orElse(Supplier<? extends Option<T>> other) {
         return other.get();
     }

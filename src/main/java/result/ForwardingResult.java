@@ -30,9 +30,4 @@ public interface ForwardingResult<T, E extends Exception> extends Result<T, E> {
     ) {
         return inner().flatMap(func);
     }
-
-    @Override
-    default Stream<T> stream() {
-        return inner().stream();
-    }
 }

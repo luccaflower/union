@@ -32,11 +32,6 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
-    public Stream<T> stream() {
-        return Stream.of(value);
-    }
-
-    @Override
     public E unwrapErr() {
         throw new UnwrappedOkExpectingError();
     }

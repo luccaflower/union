@@ -17,11 +17,6 @@ public interface ForwardingOption<T> extends Option<T> {
     }
 
     @Override
-    default Stream<T> stream() {
-        return inner().stream();
-    }
-
-    @Override
     default Option<T> orElse(Supplier<? extends Option<T>> other) {
         return inner().orElse(other);
     }
