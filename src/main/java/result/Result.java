@@ -29,9 +29,13 @@ public interface Result<T, E extends Exception> {
     }
     T unwrap();
     E unwrapErr();
-    <R, F extends Exception> Result<R, F> flatMap(Function<T, Result<R, F>> func);
+    <R, F extends Exception> Result<R, F> flatMap(
+        Function<? super T, ? extends Result<R, F>> func
+    );
 
-    <R, F extends Exception> Result<R, F> flatMapErr(Function<E, Result<R, F>> func);
+    <R, F extends Exception> Result<R, F> flatMapErr(
+        Function<? super E, ? extends Result<R, F>> func
+    );
     Stream<T> stream();
     default T unwrapOr(T defaultValue) {
         try {
@@ -40,7 +44,7 @@ public interface Result<T, E extends Exception> {
             return defaultValue;
         }
     }
-    default T unwrapOrElse(Supplier<T> defaultFunc) {
+    default T unwrapOrElse(Supplier<? extends T> defaultFunc) {
         return unwrapOr(defaultFunc.get());
     }
     default T expect(String reason) {
@@ -57,13 +61,13 @@ public interface Result<T, E extends Exception> {
             throw new UnwrappedOkExpectingError(message);
         }
     }
-    default Result<T, E> ifOk(Consumer<T> onOk) {
-        return map(ok -> {
+    default Result<T, E> ifOk(Consumer<? super T> onOk) {
+        return this.map(ok -> {
             onOk.accept(ok);
             return ok;
         });
     }
-    default Result<T, E> ifErr(Consumer<E> onErr) {
+    default Result<T, E> ifErr(Consumer<? super E> onErr) {
         return mapErr(err -> {
             onErr.accept(err);
             return err;
@@ -73,7 +77,9 @@ public interface Result<T, E extends Exception> {
         return map(ok -> true)
             .unwrapOr(false);
     }
-    default boolean isOkAnd(Predicate<T> p) {
+    default boolean isOkAnd(
+        Predicate<? super T> p
+    ) {
         return map(p::test).unwrapOr(false);
     }
     default boolean isErr() {
@@ -81,7 +87,7 @@ public interface Result<T, E extends Exception> {
             .flatMapErr(err -> ok(true))
             .unwrap();
     }
-    default boolean isErrAnd(Predicate<E> p) {
+    default boolean isErrAnd(Predicate<? super E> p) {
         return map(ok -> false)
             .flatMapErr(err -> ok(p.test(err)))
             .unwrap();
@@ -96,22 +102,30 @@ public interface Result<T, E extends Exception> {
             .flatMapErr(err -> ok(some(err)))
             .unwrap();
     }
-    default <R> Result<R, E> map(Function<T, R> func) {
+    default <R> Result<R, E> map(Function<? super T, ? extends R> func) {
         return flatMap(ok -> ok(func.apply(ok)));
     }
-    default <F extends Exception> Result<T, F> mapErr(Function<E, F> func) {
+    default <F extends Exception> Result<T, F> mapErr(
+        Function<? super E, ? extends F> func
+    ) {
         return flatMapErr(err -> err(func.apply(err)));
     }
-    default <R> R mapOr(R defaultValue, Function<T, R> func) {
-        return map(func).unwrapOr(defaultValue);
+    default <R> R mapOr(
+        R defaultValue,
+        Function<? super T, ? extends R> func) {
+        return this
+            .<R>map(func).unwrapOr(defaultValue);
     }
-    default <R> R mapOrElse(Function<E, R> onErr, Function<T, R> onOk) {
+    default <R> R mapOrElse(
+        Function<? super E,? extends R> onErr,
+        Function<? super T,? extends R> onOk
+    ) {
         return matches(onOk, onErr);
     }
     default <R, F extends Exception> Result<R, F> and(Result<R, F> other) {
         return flatMap(ok -> other);
     }
-    default <R> Result<R, E> andThen(Function<T, R> func) {
+    default <R> Result<R, E> andThen(Function<? super T, ? extends R> func) {
         return map(func);
     }
     default <F extends Exception> Result<T, F> or(Result<T, F> res) {
@@ -130,7 +144,10 @@ public interface Result<T, E extends Exception> {
             : (Result<R, F>) Result.ok(ok));
 
     }
-    default <R> R matches(Function<T, R> ok, Function<E, R> err) {
+    default <R> R matches(
+        Function<? super T, ? extends R> ok,
+        Function<? super E, ? extends R> err
+    ) {
         return map(ok)
             .flatMapErr(e -> ok(err.apply(e)))
             .unwrap();

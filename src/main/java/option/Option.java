@@ -24,8 +24,8 @@ public interface Option<T> {
     }
 
     T unwrap();
-    <R> Option<R> flatMap(Function<T, Option<R>> func);
-    Option<T> orElse(Supplier<Option<T>> other);
+    <R> Option<R> flatMap(Function<? super T, ? extends Option<R>> func);
+    Option<T> orElse(Supplier<? extends Option<T>> other);
     Stream<T> stream();
     default T unwrapOr(T defaultValue) {
         try {
@@ -34,13 +34,13 @@ public interface Option<T> {
             return defaultValue;
         }
     }
-    default T unwrapOrElse(Supplier<T> defaultFunc) {
+    default T unwrapOrElse(Supplier<? extends T> defaultFunc) {
         return unwrapOr(defaultFunc.get());
     }
     default T expect(String reason) {
         return unwrapOrElse(() -> { throw new UnwrappedNone(reason); });
     }
-    default Option<T> ifSome(Consumer<T> onSome) {
+    default Option<T> ifSome(Consumer<? super T> onSome) {
         return map(some -> {
             onSome.accept(some);
             return some;
@@ -57,23 +57,26 @@ public interface Option<T> {
         return this.<Result<T, E>>map(Result::ok)
             .unwrapOr(Result.err(error));
     }
-    default <E extends Exception> Result<T, E> okOrElse(Supplier<E> error) {
+    default <E extends Exception> Result<T, E> okOrElse(Supplier<? extends E> error) {
         return okOr(error.get());
     }
-    default <R> Option<R> map(Function<T, R> func) {
+    default <R> Option<R> map(Function<? super T, ? extends R> func) {
         return flatMap(some -> some(func.apply(some)));
     }
-    default <R> R mapOr(R defaultValue, Function<T, R> func) {
-        return map(func).unwrapOr(defaultValue);
+    default <R> R mapOr(R defaultValue, Function<? super T, ? extends R> func) {
+        return this.<R>map(func).unwrapOr(defaultValue);
     }
-    default <R> R mapOrElse(Supplier<R> defaultFunc, Function<T, R> presentFunc) {
+    default <R> R mapOrElse(
+        Supplier<? extends R> defaultFunc,
+        Function<? super T, ? extends R> presentFunc
+    ) {
         return mapOr(defaultFunc.get(), presentFunc);
     }
     default boolean isSome() {
         return map(some -> true)
             .unwrapOr(false);
     }
-    default boolean isSomeAnd(Predicate<T> p) {
+    default boolean isSomeAnd(Predicate<? super T> p) {
         return map(p::test)
             .unwrapOr(false);
     }
@@ -90,7 +93,7 @@ public interface Option<T> {
     default <R> Option<R> and(Option<R> other) {
         return flatMap(some -> other);
     }
-    default <R> Option<R> andThen(Function<T, Option<R>> func) {
+    default <R> Option<R> andThen(Function<? super T, ? extends Option<R>> func) {
         return flatMap(func);
     }
     default Option<T> filter(Predicate<T> p) {
@@ -106,8 +109,12 @@ public interface Option<T> {
             ? ((Option<?>) some).flatten()
             : (Option<R>) Option.some(some));
     }
-    default <R> R matches(Function<T, R> some,  Supplier<R> none) {
-        return map(some)
+    default <R> R matches(
+        Function<? super T, ? extends R> some,
+        Supplier<? extends R> none
+    ) {
+        return this
+            .<R>map(some)
             .unwrapOrElse(none);
     }
 

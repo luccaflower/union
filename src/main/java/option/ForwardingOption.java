@@ -12,7 +12,7 @@ public interface ForwardingOption<T> extends Option<T> {
     }
 
     @Override
-    default <R> Option<R> flatMap(Function<T, Option<R>> func) {
+    default <R> Option<R> flatMap(Function<? super T,? extends Option<R>> func) {
         return inner().flatMap(func);
     }
 
@@ -22,7 +22,7 @@ public interface ForwardingOption<T> extends Option<T> {
     }
 
     @Override
-    default Option<T> orElse(Supplier<Option<T>> other) {
+    default Option<T> orElse(Supplier<? extends Option<T>> other) {
         return inner().orElse(other);
     }
 

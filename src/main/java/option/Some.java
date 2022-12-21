@@ -18,13 +18,13 @@ public class Some<T> implements Option<T> {
     }
 
     @Override
-    public <R> Option<R> flatMap(Function<T, Option<R>> func) {
+    public <R> Option<R> flatMap(Function<? super T, ? extends Option<R>> func) {
         return func.apply(something);
     }
 
 
     @Override
-    public Option<T> orElse(Supplier<Option<T>> other) {
+    public Option<T> orElse(Supplier<? extends Option<T>> other) {
         return this;
     }
 

@@ -18,13 +18,16 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
-    public <R, F extends Exception> Result<R, F> flatMap(Function<T, Result<R, F>> func) {
+    public <R, F extends Exception> Result<R, F> flatMap(
+        Function<? super T, ? extends Result<R, F>> func
+    ) {
         return func.apply(value);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <R, F extends Exception> Result<R, F> flatMapErr(Function<E, Result<R, F>> func) {
+    public <R, F extends Exception> Result<R, F> flatMapErr(
+        Function<? super E, ? extends Result<R, F>> func) {
         return Result.ok((R) value);
     }
 
