@@ -6,30 +6,72 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+/**
+ * <p>
+ *     A Maybe-type, similar to Java's built-in {@link Optional<T>} class.
+ *     This class provides static instantiation methods for either case, as well as a convertion method from @{@link Optional<T>}
+ * </p>
+ * <p>
+ *     This interface contains 3 abstract methods: unwrap, flatMap, and orElse, and then provides default implementations with respect to these methods.
+ * </p>
+ * <p>
+ *     Further more, the {@link ForwardingOption} interface is provided for easy implementation of wrapper classes.
+ * </p>
+ * @author Lucca Kaasgaard Christiansen
+ */
 @SuppressWarnings("unused")
 public interface Option<T> {
 
+    /**
+     * Instantiate the None-variant of the class.
+     */
     static <T> None<T> none() {
         return new None<>();
     }
 
+    /**
+     * Return the Some-variant containing the object passed to the function.
+     */
     static <T> Some<T> some(T thing) {
         return new Some<>(thing);
     }
 
+    /**
+     * A utility-function to convert a {@link Optional<T>} to an instance of this type.
+     */
     static <T> Option<T> from(Optional<T> optional) {
         return optional.isPresent()
             ? some(optional.get())
             : none();
     }
 
+    /**
+     * Extraction method to retrive the inner object if present.
+     * It is bad practice to call this method unless the client code can guarantee there is an object present.
+     * @throws UnwrappedNone on {@link None}
+     */
     T unwrap();
+
+    /**
+     * Given a function which takes an instance of type T as input, if the object is {@link Some},
+     * this method will return the result of applying that method to the inner object.
+     * @param <R> The inner type of the new option
+   **/
     <R> Option<R> flatMap(Function<? super T, ? extends Option<R>> func);
+
+    /**
+     * The {@link None}-counterpart to flatMap. Returns the Option returned by the passed {@link Supplier<T>}, in case of the None-variant,
+     * otherwise the method returns its own instance.
+     */
     Option<T> orElse(Supplier<? extends Option<T>> other);
     default Stream<T> stream() {
         return map(Stream::of)
             .unwrapOr(Stream.empty());
     }
+
+    /**
+     * Tries to extract the inner object if there is one, otherwise returns the default
+     */
     default T unwrapOr(T defaultValue) {
         try {
             return unwrap();
@@ -37,18 +79,40 @@ public interface Option<T> {
             return defaultValue;
         }
     }
+
+    /**
+     * Tries to extract the inner object, otherwise it evaluates the {@link Supplier<T>} and returns the result.
+     */
     default T unwrapOrElse(Supplier<? extends T> defaultFunc) {
         return unwrapOr(defaultFunc.get());
     }
+
+    /**
+     * Tries to extract the inner object, otherwise it throws an exception containing the error message passed to the parameter.
+     * @throws UnwrappedNone containing the reason.
+     */
     default T expect(String reason) {
         return unwrapOrElse(() -> { throw new UnwrappedNone(reason); });
     }
+
+    /**
+     * Passes the inner object to the {@link Consumer<T>}, if present, then returns the Option.
+     * Assuming the consumer has no side-effects the mutate the Option, this is a noop, that leaves the Option unaffected.
+     */
     default Option<T> ifSome(Consumer<? super T> onSome) {
         return map(some -> {
             onSome.accept(some);
             return some;
         });
     }
+
+    /**
+     * Evaluates the Action if there the Option is {@link None}.
+     * The Action is a Functional Interface which takes no arguments and returns no values, so it is assumed to have side-effect.
+     * Like ifSome, it is a noop, disregarding any side-effects from the action.
+     * @param onNone
+     * @return
+     */
     @SuppressWarnings("UnusedReturnValue")
     default Option<T> ifNone(Action onNone) {
         return orElse(() -> {
@@ -56,29 +120,54 @@ public interface Option<T> {
             return this;
         });
     }
+
+    /**
+     * Converts this instance to a {@link Result<T, E>} that is {@link Ok} on Some, and an {@link Err} containing the passed Exception on None.
+     */
     default <E extends Exception> Result<T, E> okOr(E error) {
         return this.<Result<T, E>>map(Result::ok)
             .unwrapOr(Result.err(error));
     }
+
+    /**
+     * Converts this instance to a {@link Result<T, E>} that is {@link Ok} on Some, and an {@link Err} containing the result of evaluation the passed function.
+     */
     default <E extends Exception> Result<T, E> okOrElse(Supplier<? extends E> error) {
         return okOr(error.get());
     }
+
+    /**
+     * Applies the function to the inner object if present and returns a new Option contianing it.
+     */
     default <R> Option<R> map(Function<? super T, ? extends R> func) {
         return flatMap(some -> some(func.apply(some)));
     }
+
+    /**
+     * Applies the function to the inner object if present and returns it, otherwise it returns the default value.
+     */
     default <R> R mapOr(R defaultValue, Function<? super T, ? extends R> func) {
         return this.<R>map(func).unwrapOr(defaultValue);
     }
+
+    /**
+     * Applies the function to the inner object if present and returns it, otherwise it returns the result of evaluating the default function.
+     */
     default <R> R mapOrElse(
         Supplier<? extends R> defaultFunc,
         Function<? super T, ? extends R> presentFunc
     ) {
         return mapOr(defaultFunc.get(), presentFunc);
     }
+
     default boolean isSome() {
         return map(some -> true)
             .unwrapOr(false);
     }
+
+    /**
+     * Returns true on Some if the inner object passes the predicate.
+     */
     default boolean isSomeAnd(Predicate<? super T> p) {
         return map(p::test)
             .unwrapOr(false);
@@ -87,31 +176,65 @@ public interface Option<T> {
         return map(some -> false)
             .unwrapOr(true);
     }
+
+    /**
+     * Returns the first option if it is Some, and the second Option, if the first is None.
+     *
+     * @param other
+     * @return
+     */
     default Option<T> or(Option<T> other) {
         return orElse(() -> other);
     }
+
     default boolean contains(T candidate) {
         return isSomeAnd(some -> some.equals(candidate));
     }
+
+    /**
+     * Returns the first Option if it is None, otherwise it returns Some
+     */
     default <R> Option<R> and(Option<R> other) {
         return flatMap(some -> other);
     }
+
+    /**
+     * Alias for flatMap
+     */
     default <R> Option<R> andThen(Function<? super T, ? extends Option<R>> func) {
         return flatMap(func);
     }
+
+    /**
+     * Returns Some if an object is present and it passes the predicate, otherwise it returns None.
+     */
     default Option<T> filter(Predicate<T> p) {
         return flatMap(some -> p.test(some) ? some(some) : none());
     }
+
+    /**
+     * If only one Option is Some, it returns Some, otherwise it returns None.
+     * @param other
+     * @return
+     */
     default Option<T> xor(Option<T> other) {
         return isSome() ^ other.isSome() ? or(other) : none();
     }
 
+
+    /**
+     * Flattens any nested Options. Thus, in case you have a structure such as {@code Option<Option<Option<T>>>} this returns an {@code Option<T>}
+     */
     @SuppressWarnings("unchecked")
     default <R> Option<R> flatten() {
         return flatMap(some -> some instanceof Option<?>
             ? ((Option<?>) some).flatten()
             : (Option<R>) Option.some(some));
     }
+
+    /**
+     * Applies the some-function on the inner object if it is present, otherwise it evaluates the none-function.
+     */
     default <R> R matches(
         Function<? super T, ? extends R> some,
         Supplier<? extends R> none
@@ -121,6 +244,11 @@ public interface Option<T> {
             .unwrapOrElse(none);
     }
 
+
+    /**
+     * This collector takes a {@link List<Option<T>>} and converts it to an {@link Option<List<T>>},
+     * If any objects are present, this returns a Some with a List containing all objects, otherwise it returns None
+     */
     static <T> Collector<Option<T>, List<T>, Option<List<T>>> orCollector() {
         return new Collector<>() {
             @Override
@@ -157,6 +285,12 @@ public interface Option<T> {
         };
     }
 
+    /**
+     * This collector converts a {@link List<Option<T>>} into an {@link Option<List<T>>}.
+     * This collector returns Some if, and only if, all Options in the List are Some, otherwise it returns None.
+     * @return
+     * @param <T>
+     */
     static <T> Collector<Option<T>, List<Option<T>>, Option<List<T>>> andCollector() {
         return new Collector<>() {
             @Override
