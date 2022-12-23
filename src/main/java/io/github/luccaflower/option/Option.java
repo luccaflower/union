@@ -1,6 +1,6 @@
-package option;
+package io.github.luccaflower.option;
 
-import result.*;
+import io.github.luccaflower.result.*;
 
 import java.util.*;
 import java.util.function.*;

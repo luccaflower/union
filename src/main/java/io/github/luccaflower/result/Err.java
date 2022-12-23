@@ -1,4 +1,4 @@
-package result;
+package io.github.luccaflower.result;
 
 
 import java.util.function.*;

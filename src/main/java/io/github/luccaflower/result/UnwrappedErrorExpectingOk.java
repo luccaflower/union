@@ -1,4 +1,4 @@
-package result;
+package io.github.luccaflower.result;
 
 public class UnwrappedErrorExpectingOk extends RuntimeException {
     public UnwrappedErrorExpectingOk(Throwable e) {

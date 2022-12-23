@@ -1,4 +1,4 @@
-package option;
+package io.github.luccaflower.option;
 
 public class UnwrappedNone extends RuntimeException {
     public UnwrappedNone() {

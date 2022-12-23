@@ -1,5 +1,5 @@
 import dummy.*;
-import option.*;
+import io.github.luccaflower.option.*;
 import org.junit.jupiter.api.*;
 
 import java.util.*;
@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.*;
 import java.util.stream.*;
 
 import static matchers.Matchers.throwsA;
-import static option.Option.none;
-import static option.Option.some;
+import static io.github.luccaflower.option.Option.none;
+import static io.github.luccaflower.option.Option.some;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

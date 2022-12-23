@@ -1,18 +1,17 @@
 import dummy.*;
+import io.github.luccaflower.result.*;
 import org.junit.jupiter.api.*;
-import result.*;
-import result.Unit;
 
 import java.util.*;
 import java.util.stream.*;
 
 import static matchers.Matchers.throwsAn;
-import static option.Option.none;
-import static option.Option.some;
+import static io.github.luccaflower.option.Option.none;
+import static io.github.luccaflower.option.Option.some;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static result.Result.err;
-import static result.Result.ok;
+import static io.github.luccaflower.result.Result.err;
+import static io.github.luccaflower.result.Result.ok;
 
 class ResultTest {
     @Test

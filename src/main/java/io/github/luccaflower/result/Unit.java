@@ -1,4 +1,4 @@
-package result;
+package io.github.luccaflower.result;
 
 /**
  * The Unit class represents the void return-type in cases where an object still

@@ -1,13 +1,13 @@
-package result;
+package io.github.luccaflower.result;
 
-import option.*;
+import io.github.luccaflower.option.*;
 
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-import static option.Option.some;
-import static result.Unit.unit;
+import static io.github.luccaflower.option.Option.some;
+import static io.github.luccaflower.result.Unit.unit;
 
 /**
  * <p>
