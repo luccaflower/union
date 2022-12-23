@@ -8,9 +8,9 @@ import java.util.stream.*;
 
 /**
  * <p>
- *     A Maybe-type, similar to Java's built-in {@link Optional<T>} class.
+ *     A Maybe-type, similar to Java's built-in {@link Optional} class.
  *     This class provides static instantiation methods for either case, as well
- *     as a conversion method from @{@link Optional<T>}
+ *     as a conversion method from @{@link Optional}
  * </p>
  * <p>
  *     This interface contains 3 abstract methods: unwrap, flatMap, and orElse,
@@ -41,7 +41,7 @@ public interface Option<T> {
     }
 
     /**
-     * A utility-function to convert a {@link Optional<T>} to an instance of this type.
+     * A utility-function to convert a {@link Optional} to an instance of this type.
      */
     static <T> Option<T> from(Optional<T> optional) {
         return optional.isPresent()
@@ -64,7 +64,8 @@ public interface Option<T> {
     <R> Option<R> flatMap(Function<? super T, ? extends Option<R>> func);
 
     /**
-     * The {@link None}-counterpart to flatMap. Returns the Option returned by the passed {@link Supplier<T>}, in case of the None-variant,
+     * The {@link None}-counterpart to flatMap. Returns the Option returned by the passed function,
+     * in case of the None-variant,
      * otherwise the method returns its own instance.
      */
     Option<T> orElse(Supplier<? extends Option<T>> other);
@@ -258,7 +259,7 @@ public interface Option<T> {
 
 
     /**
-     * This collector takes a {@link List<Option>} and converts it to an {@link Option<List>},
+     * This collector takes a {@code List<Option<T>>} and converts it to an {@code Option<List<T>>},
      * If any objects are present, this returns a Some with a List containing all objects, otherwise it returns None
      */
     static <T> Collector<Option<T>, List<T>, Option<List<T>>> orCollector() {
@@ -298,7 +299,7 @@ public interface Option<T> {
     }
 
     /**
-     * This collector converts a {@link List<Option>} into an {@link Option<List>}.
+     * This collector converts a {@code List<Option<T>>} into an {@code Option<List<T>>}.
      * This collector returns Some if, and only if, all Options in the List are Some, otherwise it returns None.
      */
     static <T> Collector<Option<T>, List<Option<T>>, Option<List<T>>> andCollector() {
