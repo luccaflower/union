@@ -49,5 +49,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.MAVEN_GITHUB_TOKEN }}
         javadoc-branch: javadoc
         java-version: 11
-        target-folder: apidocs
+        target-folder: docs
         project: maven
