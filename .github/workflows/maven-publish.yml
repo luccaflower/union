@@ -47,7 +47,7 @@ jobs:
       uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.0
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        javadoc-branch: master
+        javadoc-branch: javadoc
         java-version: 11
         target-folder: apidocs
         project: maven
