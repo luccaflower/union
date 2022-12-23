@@ -23,9 +23,9 @@ jobs:
       with:
         servers: |
           [{
-            "id": "byggserver",
-            "username": "${env.NEXUS_USER}",
-            "password": "${env.NEXUS_PASS}"
+            "id": "ossrh",
+            "username": "${{secrets.SONATYPE_USERNAME}}",
+            "password": "${{secrets.SONATYPE_PASSWORD}}"
           }]
         properties: |
           [{"gpg.passphrase": "${{secrets.GPG_PASSPHRASE}}"}]
@@ -43,7 +43,7 @@ jobs:
       run: mvn package
 
     - name: Publish to Apache Maven
-      run: mvn deploy -P mahjonglogic && mvn deploy -P github
+      run: mvn deploy -P sonatype && mvn deploy -P github
       env:
         GITHUB_TOKEN: ${{ github.token }}
         NEXUS_USER: ${{ secrets.NEXUS_USER }}
