@@ -15,15 +15,15 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
     @Override
     @SuppressWarnings("unchecked")
-    public <R, F extends Exception> Result<R, F> flatMap(
-        Function<? super T, ? extends Result<R, F>> func
+    public <R> Result<R, E> flatMap(
+        Function<? super T, ? extends Result<R, E>> func
     ) {
-        return Result.err((F) error);
+        return Result.err(error);
     }
 
     @Override
-    public <R, F extends Exception> Result<R, F> flatMapErr(
-        Function<? super E, ? extends Result<R, F>> func
+    public <F extends Exception> Result<T, F> flatMapErr(
+        Function<? super E, ? extends Result<T, F>> func
     ) {
         return func.apply(error);
     }

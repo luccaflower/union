@@ -11,8 +11,8 @@ public interface ForwardingResult<T, E extends Exception> extends Result<T, E> {
     Result<T, E> inner();
 
     @Override
-    default <R, F extends Exception> Result<R, F> flatMapErr(
-        Function<? super E, ? extends Result<R, F>> func
+    default <F extends Exception> Result<T, F> flatMapErr(
+        Function<? super E, ? extends Result<T, F>> func
     ) {
         return inner().flatMapErr(func);
     }
@@ -28,8 +28,8 @@ public interface ForwardingResult<T, E extends Exception> extends Result<T, E> {
     }
 
     @Override
-    default <R, F extends Exception> Result<R, F> flatMap(
-        Function<? super T, ? extends Result<R, F>> func
+    default <R> Result<R, E> flatMap(
+        Function<? super T, ? extends Result<R, E>> func
     ) {
         return inner().flatMap(func);
     }

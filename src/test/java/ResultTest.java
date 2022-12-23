@@ -156,7 +156,7 @@ class ResultTest {
             ok().andThen(ok -> ok(1))
                 .andThen(Result::ok)
                 .andThen(Result::ok)
-                .<Integer, Exception>flatten()
+                .<Integer>flatten()
                 .flatMap(ok -> ok(ok + 1)),
             is(ok(2))
         );

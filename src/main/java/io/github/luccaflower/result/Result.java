@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+import static io.github.luccaflower.option.Option.none;
 import static io.github.luccaflower.option.Option.some;
 import static io.github.luccaflower.result.Unit.unit;
 
@@ -78,16 +79,16 @@ public interface Result<T, E extends Exception> {
      * On an Ok-variant, this method applies the passed function to the inner
      * object and returns the result.
      */
-    <R, F extends Exception> Result<R, F> flatMap(
-        Function<? super T, ? extends Result<R, F>> func
+    <R> Result<R, E> flatMap(
+        Function<? super T, ? extends Result<R, E>> func
     );
 
     /**
      * On an error variant, this method applies the passed function to the inner
      * Exception and returns the result.
      */
-    <R, F extends Exception> Result<R, F> flatMapErr(
-        Function<? super E, ? extends Result<R, F>> func
+    <F extends Exception> Result<T, F> flatMapErr(
+        Function<? super E, ? extends Result<T, F>> func
     );
 
     /**
@@ -210,8 +211,8 @@ public interface Result<T, E extends Exception> {
      * the inner object on Ok and None on Error.
      */
     default Option<T> okToOption() {
-        return map(Option::some)
-            .flatMapErr(err -> ok(Option.<T>none()))
+        return this.<Option<T>>map(Option::some)
+            .flatMapErr(err -> ok(none()))
             .unwrap();
     }
 
@@ -220,7 +221,7 @@ public interface Result<T, E extends Exception> {
      * the inner Exception on Error and None on Ok.
      */
     default Option<E> errToOption() {
-        return map(ok -> Option.<E>none())
+        return this.<Option<E>>map(ok -> none())
             .flatMapErr(err -> ok(some(err)))
             .unwrap();
     }
@@ -268,7 +269,7 @@ public interface Result<T, E extends Exception> {
     /**
      * Returns the second Result if both are Ok, otherwise returns the first Error.
      */
-    default <R, F extends Exception> Result<R, F> and(Result<R, F> other) {
+    default <R> Result<R, E> and(Result<R, E> other) {
         return flatMap(ok -> other);
     }
 
@@ -306,10 +307,10 @@ public interface Result<T, E extends Exception> {
      * becomes a {@code Result<T, E>}
      */
     @SuppressWarnings("unchecked")
-    default <R, F extends Exception> Result<R, F> flatten() {
-        return flatMap(ok -> ok instanceof Result<?,?>
-            ? ((Result<?, ?>) ok).flatten()
-            : (Result<R, F>) Result.ok(ok));
+    default <R> Result<R, E> flatten() {
+        return flatMap(ok -> ok instanceof Result<?, ?>
+            ? ((Result<R, E>) ok).flatten()
+            : Result.ok((R) ok));
 
     }
 
@@ -320,7 +321,7 @@ public interface Result<T, E extends Exception> {
         Function<? super T, ? extends R> ok,
         Function<? super E, ? extends R> err
     ) {
-        return map(ok)
+        return this.<R>map(ok)
             .flatMapErr(e -> ok(err.apply(e)))
             .unwrap();
     }
@@ -383,20 +384,25 @@ public interface Result<T, E extends Exception> {
      * all objects contained within Ok-variants. Otherwise, it returns the last
      * encountered Error.
      */
-    static <T, E extends Exception> Collector<Result<T, E>, List<Result<T, E>>, Result<List<T>, E>> orCollector() {
+    static
+    <
+        T,
+        E extends Exception> Collector<Result<T, E>,
+        List<Result<T, Exception>>, Result<List<T>, Exception>>
+    orCollector() {
         return new Collector<>() {
             @Override
-            public Supplier<List<Result<T, E>>> supplier() {
+            public Supplier<List<Result<T, Exception>>> supplier() {
                 return ArrayList::new;
             }
 
             @Override
-            public BiConsumer<List<Result<T, E>>, Result<T, E>> accumulator() {
-                return List::add;
+            public BiConsumer<List<Result<T, Exception>>, Result<T, E>> accumulator() {
+                return (acc, e) -> acc.add(e.mapErr(Exception::new));
             }
 
             @Override
-            public BinaryOperator<List<Result<T, E>>> combiner() {
+            public BinaryOperator<List<Result<T, Exception>>> combiner() {
                 return (one, other) -> {
                     one.addAll(other);
                     return one;
@@ -404,16 +410,17 @@ public interface Result<T, E extends Exception> {
             }
 
             @Override
-            public Function<List<Result<T, E>>, Result<List<T>, E>> finisher() {
+            public Function<List<Result<T, Exception>>, Result<List<T>, Exception>>
+            finisher() {
                 return list -> list.stream().reduce(
-                    err().flatten(),
+                    err().<List<T>>flatten(),
                     (acc, e) -> e.map(
                         ok -> {
-                            var res = acc.unwrapOr(new ArrayList<>());
+                            List<T> res = acc.unwrapOr(new ArrayList<>());
                             res.add(ok);
                             return res;
                         }
-                    ).<E>or(acc),
+                    ).or(acc),
                     (one, other) -> one.and(other).map(ok -> {
                         ok.addAll(other.unwrap());
                         return ok;
