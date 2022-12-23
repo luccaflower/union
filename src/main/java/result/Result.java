@@ -74,6 +74,10 @@ public interface Result<T, E extends Exception> {
      * @throws UnwrappedOkExpectingError if called on an Ok-variant
      */
     E unwrapErr();
+    /**
+     * On an Ok-variant, this method applies the passed function to the inner
+     * object and returns the result.
+     */
     <R, F extends Exception> Result<R, F> flatMap(
         Function<? super T, ? extends Result<R, F>> func
     );
