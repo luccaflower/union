@@ -50,3 +50,4 @@ jobs:
         javadoc-branch: master
         java-version: 11
         target-folder: apidocs
+        project: maven
