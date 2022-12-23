@@ -42,3 +42,9 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
         NEXUS_USER: ${{ secrets.NEXUS_USER }}
         NEXUS_PASS: ${{ secrets.NEXUS_PASS }}
+
+    - name: Deploy JavaDoc
+      uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.0
+      javadoc-branch: master
+      java-version: 11
+      target-folder: apidocs
