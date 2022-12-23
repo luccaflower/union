@@ -1,0 +1,20 @@
+  name: Publish JavaDoc
+  on:
+    push:
+      tags:
+        - *
+
+  jobs:
+    javadoc:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+
+        - name: Deploy JavaDoc
+          uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.0
+          with:
+            GITHUB_TOKEN: ${{ secrets.MAVEN_GITHUB_TOKEN }}
+            javadoc-branch: javadoc
+            java-version: 11
+            target-folder: docs
+            project: maven

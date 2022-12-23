@@ -7,7 +7,6 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -42,12 +41,3 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
         NEXUS_USER: ${{ secrets.NEXUS_USER }}
         NEXUS_PASS: ${{ secrets.NEXUS_PASS }}
-
-    - name: Deploy JavaDoc
-      uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.0
-      with:
-        GITHUB_TOKEN: ${{ secrets.MAVEN_GITHUB_TOKEN }}
-        javadoc-branch: javadoc
-        java-version: 11
-        target-folder: docs
-        project: maven
