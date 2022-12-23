@@ -2,6 +2,10 @@ package option;
 
 import java.util.function.*;
 
+/**
+ * ForwardingOption is a utility interface that functions as a wrapper around any given {@link Option}
+ * and delegates calls to the inner Option.
+ */
 @SuppressWarnings("unused")
 public interface ForwardingOption<T> extends Option<T> {
     Option<T> inner();

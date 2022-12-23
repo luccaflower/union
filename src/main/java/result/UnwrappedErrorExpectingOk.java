@@ -17,6 +17,8 @@ public class UnwrappedErrorExpectingOk extends RuntimeException {
 
     @Override
     public int hashCode() {
-        return 31 * getMessage().hashCode();
+        return 31 * (getCause() != null
+            ? getCause().hashCode()
+            : getMessage().hashCode());
     }
 }

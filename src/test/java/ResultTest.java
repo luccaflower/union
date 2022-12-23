@@ -197,5 +197,4 @@ class ResultTest {
             is(ok(1))
         );
     }
-
 }
