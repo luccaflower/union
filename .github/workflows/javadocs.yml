@@ -1,8 +1,6 @@
   name: Publish JavaDoc
   on:
     push:
-      branches:
-        - 'master'
       tags:
         - '*'
 
