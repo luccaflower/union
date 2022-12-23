@@ -27,21 +27,8 @@ jobs:
             "username": "${env.NEXUS_USER}",
             "password": "${env.NEXUS_PASS}"
           }]
-        profiles: |
-          [
-            {
-              "id": "mahjonglogic",
-              "properties": [
-                "gpg.passphrase": "${{secrets.GPG_PASSPHRASE}}"
-              ]
-            },
-            {
-              "id": "github",
-              "properties": [
-                "gpg.passphrase": "${{secrets.GPG_PASSPHRASE}}"
-              ]
-            }
-          ]
+        properties: |
+          [{"gpg.passphrase": "${{secrets.GPG_PASSPHRASE}}"}]
 
     - name: Check settings
       run: cat $HOME/.m2/settings.xml
