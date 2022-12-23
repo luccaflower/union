@@ -46,7 +46,7 @@ jobs:
     - name: Deploy JavaDoc
       uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.0
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.MAVEN_GITHUB_TOKEN }}
         javadoc-branch: javadoc
         java-version: 11
         target-folder: apidocs
