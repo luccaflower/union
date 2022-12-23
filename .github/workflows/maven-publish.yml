@@ -45,6 +45,8 @@ jobs:
 
     - name: Deploy JavaDoc
       uses: MathieuSoysal/Javadoc-publisher.yml@v2.3.0
-      javadoc-branch: master
-      java-version: 11
-      target-folder: apidocs
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        javadoc-branch: master
+        java-version: 11
+        target-folder: apidocs
