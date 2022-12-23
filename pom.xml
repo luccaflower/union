@@ -105,7 +105,6 @@
                         <id>javadoc</id>
                         <phase>site</phase>
                         <goals>
-                            <goal>javadoc</goal>
                             <goal>jar</goal>
                         </goals>
                     </execution>
