@@ -302,8 +302,8 @@ public interface Result<T> {
     }
 
     /**
-     * Flattens any nested Results so that, for instance a {@code Result<Result<Result<T, E>>>>}
-     * becomes a {@code Result<T, E>}
+     * Flattens any nested Results so that, for instance, a {@code Result<Result<Result<T>>>>}
+     * becomes a {@code Result<T>}
      */
     @SuppressWarnings("unchecked")
     default <R> Result<R> flatten() {
@@ -326,15 +326,11 @@ public interface Result<T> {
     }
 
     /**
-     * Converts a {@code List<Result<T, E>} to a {@code Result<List<T>, E>}.
+     * Converts a {@code List<Result<T>} to a {@code Result<List<T>>}.
      * If any Result contained within the List is an Error, it returns the first
      * Error
      */
-    static <T> Collector<
-        Result<T>,
-        List<Result<T>>,
-        Result<List<T>>
-        >
+    static <T> Collector<Result<T>, List<Result<T>>, Result<List<T>>>
     andCollector() {
         return new Collector<>() {
             @Override
@@ -378,16 +374,13 @@ public interface Result<T> {
     }
 
     /**
-     * Converts a {@code List<Result<T, E>} to a {@code Result<List<T>, E>}.
+     * Converts a {@code List<Result<T>} to a {@code Result<List<T>>}.
      * If any Results within the List are Ok, then it returns an Ok containing
      * all objects contained within Ok-variants. Otherwise, it returns the last
      * encountered Error.
      */
     static
-    <T> Collector<
-        Result<T>,
-        List<Result<T>>, Result<List<T>>
-        >
+    <T> Collector<Result<T>, List<Result<T>>, Result<List<T>>>
     orCollector() {
         return new Collector<>() {
             @Override
