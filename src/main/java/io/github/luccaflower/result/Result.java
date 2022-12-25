@@ -273,13 +273,6 @@ public interface Result<T> {
     }
 
     /**
-     * Alias for map
-     */
-    default <R> Result<R> andThen(Function<? super T, ? extends R> func) {
-        return map(func);
-    }
-
-    /**
      * Returns the first Ok-value. If both Results are Errors, it returns the second Error.
      */
     default Result<T> or(Result<T> res) {

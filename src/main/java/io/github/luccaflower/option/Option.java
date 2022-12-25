@@ -214,13 +214,6 @@ public interface Option<T> {
     }
 
     /**
-     * Alias for flatMap
-     */
-    default <R> Option<R> andThen(Function<? super T, ? extends Option<R>> func) {
-        return flatMap(func);
-    }
-
-    /**
      * Returns Some if an object is present and it passes the predicate, otherwise it returns None.
      */
     default Option<T> filter(Predicate<T> p) {
