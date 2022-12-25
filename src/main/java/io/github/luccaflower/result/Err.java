@@ -14,7 +14,6 @@ public class Err<T> implements Result<T> {
         throw new UnwrappedErrorExpectingOk(error);
     }
     @Override
-    @SuppressWarnings("unchecked")
     public <R> Result<R> flatMap(
         Function<? super T, ? extends Result<R>> func
     ) {
