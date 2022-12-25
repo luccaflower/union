@@ -131,8 +131,8 @@ public interface Option<T> {
     /**
      * Converts this instance to a {@link Result} that is {@link Ok} on Some, and an {@link Err} containing the passed Exception on None.
      */
-    default <E extends Exception> Result<T, E> okOr(E error) {
-        return this.<Result<T, E>>map(Result::ok)
+    default Result<T> okOr(Exception error) {
+        return this.<Result<T>>map(Result::ok)
             .unwrapOr(Result.err(error));
     }
 
@@ -140,7 +140,7 @@ public interface Option<T> {
      * Converts this object to a {@link Result} that is {@link Ok} on Some,
      * and an {@link Err} containing the result of evaluating the passed function.
      */
-    default <E extends Exception> Result<T, E> okOrElse(Supplier<? extends E> error) {
+    default Result<T> okOrElse(Supplier<? extends Exception> error) {
         return okOr(error.get());
     }
 

@@ -181,7 +181,7 @@ class ResultTest {
     @Test
     void listWithErrorAndCollectsToError() {
         assertThat(
-            Stream.<Result<Unit, Exception>>of(ok(), ok(), ok(), err())
+            Stream.<Result<Unit>>of(ok(), ok(), ok(), err())
                 .collect(Result.andCollector()),
             is(err())
         );
@@ -189,7 +189,7 @@ class ResultTest {
 
     @Test
     void listWithOkOrCollectsToOk() {
-        Result<Integer, Exception> result = Stream.<Result<Unit, Exception>>of(ok(), err(), err())
+        Result<Integer> result = Stream.<Result<Unit>>of(ok(), err(), err())
             .collect(Result.orCollector()).map(List::size);
         assertThat(
             result,

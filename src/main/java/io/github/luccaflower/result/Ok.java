@@ -4,7 +4,7 @@ package io.github.luccaflower.result;
 import java.util.function.*;
 
 @SuppressWarnings("unused")
-public class Ok<T, E extends Exception> implements Result<T, E>{
+public class Ok<T> implements Result<T>{
     private final T value;
 
     public Ok(T value) {
@@ -17,31 +17,31 @@ public class Ok<T, E extends Exception> implements Result<T, E>{
     }
 
     @Override
-    public <R> Result<R, E> flatMap(
-        Function<? super T, ? extends Result<R, E>> func
+    public <R> Result<R> flatMap(
+        Function<? super T, ? extends Result<R>> func
     ) {
         return func.apply(value);
     }
 
     @Override
-    public <F extends Exception> Result<T, F> flatMapErr(
-        Function<? super E, ? extends Result<T, F>> func) {
+    public Result<T> flatMapErr(
+        Function<? super Exception, ? extends Result<T>> func) {
         return Result.ok(value);
     }
 
     @Override
-    public E unwrapErr() {
+    public Exception unwrapErr() {
         throw new UnwrappedOkExpectingError();
     }
     @Override
-    public boolean containsErr(E candidate) {
+    public boolean containsErr(Exception candidate) {
         return false;
     }
 
     @Override
     public boolean equals(Object other) {
         return other instanceof Ok
-            && ((Ok<?, ?>) other).value.equals(this.value);
+            && ((Ok<?>) other).value.equals(this.value);
     }
 
     public int hashCode() {

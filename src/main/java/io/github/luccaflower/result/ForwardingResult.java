@@ -7,12 +7,12 @@ import java.util.function.*;
  * and delegates calls to the inner Result.
  */
 @SuppressWarnings("unused")
-public interface ForwardingResult<T, E extends Exception> extends Result<T, E> {
-    Result<T, E> inner();
+public interface ForwardingResult<T> extends Result<T> {
+    Result<T> inner();
 
     @Override
-    default <F extends Exception> Result<T, F> flatMapErr(
-        Function<? super E, ? extends Result<T, F>> func
+    default Result<T> flatMapErr(
+        Function<? super Exception, ? extends Result<T>> func
     ) {
         return inner().flatMapErr(func);
     }
@@ -23,13 +23,13 @@ public interface ForwardingResult<T, E extends Exception> extends Result<T, E> {
     }
 
     @Override
-    default E unwrapErr() {
+    default Exception unwrapErr() {
         return inner().unwrapErr();
     }
 
     @Override
-    default <R> Result<R, E> flatMap(
-        Function<? super T, ? extends Result<R, E>> func
+    default <R> Result<R> flatMap(
+        Function<? super T, ? extends Result<R>> func
     ) {
         return inner().flatMap(func);
     }

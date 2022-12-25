@@ -3,9 +3,9 @@ package io.github.luccaflower.result;
 
 import java.util.function.*;
 @SuppressWarnings("unused")
-public class Err<T, E extends Exception> implements Result<T, E> {
-    private final E error;
-    public Err(E error) {
+public class Err<T> implements Result<T> {
+    private final Exception error;
+    public Err(Exception error) {
         this.error = error;
     }
 
@@ -15,28 +15,28 @@ public class Err<T, E extends Exception> implements Result<T, E> {
     }
     @Override
     @SuppressWarnings("unchecked")
-    public <R> Result<R, E> flatMap(
-        Function<? super T, ? extends Result<R, E>> func
+    public <R> Result<R> flatMap(
+        Function<? super T, ? extends Result<R>> func
     ) {
         return Result.err(error);
     }
 
     @Override
-    public <F extends Exception> Result<T, F> flatMapErr(
-        Function<? super E, ? extends Result<T, F>> func
+    public Result<T> flatMapErr(
+        Function<? super Exception, ? extends Result<T>> func
     ) {
         return func.apply(error);
     }
 
     @Override
-    public E unwrapErr() {
+    public Exception unwrapErr() {
         return error;
     }
 
     @Override
     public boolean equals(Object other) {
         return other instanceof Err
-            && ((Err<?, ?>) other).error.equals(this.error);
+            && ((Err<?>) other).error.equals(this.error);
     }
 
     @Override
