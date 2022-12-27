@@ -5,6 +5,7 @@ import java.util.function.*;
 
 @SuppressWarnings("unused")
 public class None<T> implements Option<T> {
+    protected None() {}
     @Override
     public T unwrap() {
         throw new UnwrappedNone();

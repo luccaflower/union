@@ -5,7 +5,7 @@ import java.util.function.*;
 @SuppressWarnings("unused")
 public class Err<T> implements Result<T> {
     private final Exception error;
-    public Err(Exception error) {
+    protected Err(Exception error) {
         this.error = error;
     }
 

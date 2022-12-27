@@ -7,7 +7,7 @@ import java.util.function.*;
 public class Ok<T> implements Result<T>{
     private final T value;
 
-    public Ok(T value) {
+    protected Ok(T value) {
         this.value = value;
     }
 

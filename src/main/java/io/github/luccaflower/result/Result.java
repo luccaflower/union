@@ -33,6 +33,7 @@ public interface Result<T> {
      * Instantiate an Ok-variant containing the passed parameter.
      */
     static <T> Result<T> ok(T value) {
+        Objects.requireNonNull(value);
         return new Ok<>(value);
     }
 
@@ -40,6 +41,7 @@ public interface Result<T> {
      * Instantiate an Error-variant containing the passed Exception.
      */
     static <T> Result<T> err(Exception error) {
+        Objects.requireNonNull(error);
         return new Err<>(error);
     }
 
@@ -104,6 +106,7 @@ public interface Result<T> {
      * default value if called on an Error.
      */
     default T unwrapOr(T defaultValue) {
+        Objects.requireNonNull(defaultValue);
         try {
             return unwrap();
         } catch (UnwrappedErrorExpectingOk ignored) {
@@ -214,7 +217,7 @@ public interface Result<T> {
      * the inner object on Ok and None on Error.
      */
     default Option<T> okToOption() {
-        return this.<Option<T>>map(Option::some)
+        return this.map(Option::some)
             .flatMapErr(err -> ok(none()))
             .unwrap();
     }
@@ -251,9 +254,8 @@ public interface Result<T> {
      * Applies the function to the inner object contained in an Ok-variant and
      * returns the result, and returns the default value on Error.
      */
-    default <R> R mapOr(
-        R defaultValue,
-        Function<? super T, ? extends R> func) {
+    default <R> R mapOr(R defaultValue, Function<? super T, ? extends R> func) {
+        Objects.requireNonNull(defaultValue);
         return this
             .<R>map(func).unwrapOr(defaultValue);
     }

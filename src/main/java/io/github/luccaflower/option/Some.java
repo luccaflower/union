@@ -7,7 +7,7 @@ import java.util.function.*;
 public class Some<T> implements Option<T> {
     private final T something;
 
-    public Some(T something) {
+    protected Some(T something) {
         this.something = something;
     }
 

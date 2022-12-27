@@ -31,24 +31,31 @@ public interface Option<T> {
     /**
      * Instantiate the None-variant of the class.
      */
-    static <T> None<T> none() {
+    static <T> Option<T> none() {
         return new None<>();
     }
 
     /**
      * Return the Some-variant containing the object passed to the function.
      */
-    static <T> Some<T> some(T thing) {
+    static <T> Option<T> some(T thing) {
+        Objects.requireNonNull(thing);
         return new Some<>(thing);
+    }
+
+    /**
+     * Given a parameter that may or may not be null, if it is null, it returns
+     * None, else it returns Some containing the value.
+     */
+    static <T> Option<T> maybe(T nullable) {
+        return nullable == null ? none() : some(nullable);
     }
 
     /**
      * A utility-function to convert a {@link Optional} to an instance of this type.
      */
     static <T> Option<T> from(Optional<T> optional) {
-        return optional.isPresent()
-            ? some(optional.get())
-            : none();
+        return optional.map(Option::some).orElseGet(Option::none);
     }
 
     /**
