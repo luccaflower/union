@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+import static io.github.luccaflower.result.Result.err;
+
 /**
  * <p>
  *     A Maybe-type, similar to Java's built-in {@link Optional} class.
@@ -90,7 +92,11 @@ public interface Option<T> {
      * passed function and returns the result.
      */
     default T unwrapOrElse(Supplier<? extends T> defaultFunc) {
-        return unwrapOr(defaultFunc.get());
+        try {
+            return unwrap();
+        } catch (UnwrappedNone e) {
+            return defaultFunc.get();
+        }
     }
 
     /**
@@ -132,8 +138,8 @@ public interface Option<T> {
      * Converts this instance to a {@link Result} that is {@link Ok} on Some, and an {@link Err} containing the passed Exception on None.
      */
     default Result<T> okOr(Exception error) {
-        return this.<Result<T>>map(Result::ok)
-            .unwrapOr(Result.err(error));
+        return this.map(Result::ok)
+            .unwrapOr(err(error));
     }
 
     /**
@@ -141,7 +147,9 @@ public interface Option<T> {
      * and an {@link Err} containing the result of evaluating the passed function.
      */
     default Result<T> okOrElse(Supplier<? extends Exception> error) {
-        return okOr(error.get());
+        return this.
+            map(Result::ok)
+            .unwrapOrElse(() -> err(error.get()));
     }
 
     /**

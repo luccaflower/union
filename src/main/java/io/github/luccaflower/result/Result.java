@@ -32,14 +32,14 @@ public interface Result<T> {
     /**
      * Instantiate an Ok-variant containing the passed parameter.
      */
-    static<T> Ok<T> ok(T value) {
+    static <T> Result<T> ok(T value) {
         return new Ok<>(value);
     }
 
     /**
      * Instantiate an Error-variant containing the passed Exception.
      */
-    static<T> Err<T> err(Exception error) {
+    static <T> Result<T> err(Exception error) {
         return new Err<>(error);
     }
 
@@ -47,7 +47,7 @@ public interface Result<T> {
      * Utility-function used to instantiate an Ok-variant containing a Unit-instance,
      * representing a successful operation which returns nothing.
      */
-    static Ok<Unit> ok() {
+    static Result<Unit> ok() {
         return ok(unit());
     }
 
@@ -55,7 +55,7 @@ public interface Result<T> {
      * Utility-function used to instantiate an Error-variant containing a default
      * Exception
      */
-    static<T> Err<T> err() {
+    static <T> Result<T> err() {
         return err(new ResultException());
     }
 
@@ -116,7 +116,11 @@ public interface Result<T> {
      */
 
     default T unwrapOrElse(Supplier<? extends T> defaultFunc) {
-        return unwrapOr(defaultFunc.get());
+        try {
+            return unwrap();
+        } catch (UnwrappedErrorExpectingOk e) {
+            return defaultFunc.get();
+        }
     }
 
     /**
